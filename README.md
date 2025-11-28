@@ -105,7 +105,7 @@ Ver `SETUP_GUIDE.md` para detalles completos.
 
 1. **Clonar el repositorio**
 ```bash
-git clone <repository-url>
+git clone <https://github.com/santy8ap/Red-Estampacion>
 cd Red-Estampacion
 ```
 
