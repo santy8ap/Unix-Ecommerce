@@ -44,6 +44,17 @@ export default function ProductsContent() {
     const [error, setError] = useState<string | null>(null)
     const [showFilters, setShowFilters] = useState(false)
     const [activeFiltersCount, setActiveFiltersCount] = useState(0)
+    const [isDesktop, setIsDesktop] = useState(false)
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsDesktop(window.innerWidth >= 768)
+        }
+
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const [filters, setFilters] = useState<Filters>({
         category: searchParams.get('category') || 'Todas',
@@ -161,7 +172,7 @@ export default function ProductsContent() {
 
                 {/* Filter Card */}
                 <AnimatePresence>
-                    {(showFilters || window.innerWidth >= 768) && (
+                    {(showFilters || isDesktop) && (
                         <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
