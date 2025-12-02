@@ -102,3 +102,20 @@ model OrderItem {
   size      String
   color     String
 }
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Int      // Porcentaje de descuento (0-100)
+  minAmount   Float?   // Monto mínimo para aplicar el cupón
+  maxUses     Int?     // Máximo número de usos (null = ilimitado)
+  currentUses Int      @default(0)
+  validFrom   DateTime @default(now())
+  validUntil  DateTime
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([code])
+  @@index([active])
+}

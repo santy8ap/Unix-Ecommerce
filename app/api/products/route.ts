@@ -17,10 +17,10 @@ function parseJSON(str: string): any {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    
+
     // Paginación
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '12')
+    const limit = Math.min(parseInt(searchParams.get('limit') || '12'), 50) // Max 50 items per page
     const skip = (page - 1) * limit
 
     // Filtros
@@ -29,16 +29,40 @@ export async function GET(request: NextRequest) {
     const size = searchParams.get('size')
     const search = searchParams.get('search')
     const featured = searchParams.get('featured')
+    const minPrice = searchParams.get('minPrice')
+    const maxPrice = searchParams.get('maxPrice')
+    const sortBy = searchParams.get('sortBy') || 'createdAt' // createdAt, price, name
+    const sortOrder = searchParams.get('sortOrder') || 'desc' // asc or desc
 
     const where: any = { active: true }
 
+    // Category filter
     if (category && category !== 'Todas') where.category = category
+
+    // Featured filter
     if (featured === 'true') where.featured = true
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      where.price = {}
+      if (minPrice) where.price.gte = parseFloat(minPrice)
+      if (maxPrice) where.price.lte = parseFloat(maxPrice)
+    }
+
+    // Search filter (case insensitive)
     if (search) {
       where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } }
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } }
       ]
+    }
+
+    // Determine order by
+    const orderBy: any = {}
+    if (sortBy === 'price' || sortBy === 'name' || sortBy === 'createdAt') {
+      orderBy[sortBy] = sortOrder
+    } else {
+      orderBy.createdAt = 'desc'
     }
 
     // Total de productos
@@ -49,7 +73,7 @@ export async function GET(request: NextRequest) {
       where,
       skip,
       take: limit,
-      orderBy: { createdAt: 'desc' }
+      orderBy
     })
 
     // Parsear los campos JSON y filtrar por color/talla
@@ -62,17 +86,32 @@ export async function GET(request: NextRequest) {
 
     // Filtrar por color si se especifica
     if (color && color !== 'Todos') {
-      parsedProducts = parsedProducts.filter(p => 
+      parsedProducts = parsedProducts.filter(p =>
         p.colors.includes(color)
       )
     }
 
     // Filtrar por talla si se especifica
     if (size && size !== 'Todas') {
-      parsedProducts = parsedProducts.filter(p => 
+      parsedProducts = parsedProducts.filter(p =>
         p.sizes.includes(size)
       )
     }
+
+    // Get unique categories, colors, and sizes for filtering
+    const allProducts = await prisma.product.findMany({
+      where: { active: true },
+      select: { category: true, colors: true, sizes: true }
+    })
+
+    const categories = [...new Set(allProducts.map(p => p.category))]
+    const allColors = new Set<string>()
+    const allSizes = new Set<string>()
+
+    allProducts.forEach(p => {
+      parseJSON(p.colors).forEach((c: string) => allColors.add(c))
+      parseJSON(p.sizes).forEach((s: string) => allSizes.add(s))
+    })
 
     return NextResponse.json({
       products: parsedProducts,
@@ -82,6 +121,11 @@ export async function GET(request: NextRequest) {
         total,
         totalPages: Math.ceil(total / limit),
         hasMore: page < Math.ceil(total / limit)
+      },
+      filters: {
+        categories,
+        colors: Array.from(allColors),
+        sizes: Array.from(allSizes)
       }
     })
   } catch (error) {
