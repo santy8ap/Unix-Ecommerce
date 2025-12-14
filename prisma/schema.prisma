@@ -44,8 +44,52 @@ model User {
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
+  closetItems   ClosetItem[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+model ClosetItem {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  category    String
+  brand       String?
+  color       String?
+  size        String?
+  price       Float?
+  purchaseDate DateTime?
+  imageUrl    String?
+  isFavorite  Boolean  @default(false)
+  condition   String?  // NEW, LIKE_NEW, GOOD, FAIR, POOR
+  season      String?  // SUMMER, WINTER, SPRING, FALL, ALL
+  occasion    String?  // CASUAL, FORMAL, SPORT, BEACH, etc.
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([category])
+  @@index([isFavorite])
+  @@index([season])
+}
+
+model Outfit {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  imageUrl    String?
+  items       Json     // Array de IDs de prendas
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([isFavorite])
 }
 
 model VerificationToken {
