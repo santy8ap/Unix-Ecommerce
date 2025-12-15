@@ -125,17 +125,23 @@ export async function POST(request: NextRequest) {
       try {
         await sendOrderConfirmation({
           orderId: order.id,
-          customerName: shipping.name,
-          customerEmail: shipping.email,
+          userName: shipping.name,
+          userEmail: shipping.email,
           total: order.total,
-          items: order.items,
-          shippingAddress: {
-            address: shipping.address,
-            city: shipping.city,
-            zip: shipping.zip,
-            name: shipping.name,
-            email: shipping.email
-          }
+          items: order.items.map(item => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            price: item.price,
+            size: item.size,
+            color: item.color
+          })),
+          shippingAddress: `${shipping.address}, ${shipping.city}, ${shipping.zip}`,
+          paymentMethod: paymentMethod || 'Bitcoin',
+          orderDate: new Date().toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          })
         })
         console.log('✅ Email de confirmación enviado a:', shipping.email)
       } catch (emailError) {

@@ -71,7 +71,10 @@ export async function POST(request: NextRequest) {
             })
         }
 
-        logger.info('AI chat response (Fallback)', { userId: session.user.id, analysis })
+        logger.info('AI chat response (Fallback)', {
+            context: 'AI_CHAT',
+            metadata: { userId: session.user.id, analysis }
+        })
 
         return NextResponse.json({
             response: analysis.text,

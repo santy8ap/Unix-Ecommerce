@@ -1,0 +1,38 @@
+
+> red-estampacion@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ `eslint` configuration in next.config.ts is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+ ⚠ Invalid next.config.ts options detected: 
+ ⚠     Unrecognized key(s) in object: 'eslint'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/santi/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/santi/Documentos/Red-Estampacion/package-lock.json
+
+   ▲ Next.js 16.0.3 (Turbopack)
+   - Environments: .env.local, .env
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 26.0s
+   Running TypeScript ...
+Failed to compile.
+
+./app/api/orders/route.ts:131:11
+Type error: Type '({ product: { name: string; id: string; createdAt: Date; updatedAt: Date; price: number; colors: string[]; description: string; images: string[]; category: string; sizes: string[]; styleTypes: string[]; stock: number; featured: boolean; active: boolean; }; } & { ...; })[]' is not assignable to type 'OrderItem[]'.
+  Property 'name' is missing in type '{ product: { name: string; id: string; createdAt: Date; updatedAt: Date; price: number; colors: string[]; description: string; images: string[]; category: string; sizes: string[]; styleTypes: string[]; stock: number; featured: boolean; active: boolean; }; } & { ...; }' but required in type 'OrderItem'.
+
+[0m [90m 129 |[39m           customerEmail[33m:[39m shipping[33m.[39memail[33m,[39m
+ [90m 130 |[39m           total[33m:[39m order[33m.[39mtotal[33m,[39m
+[31m[1m>[22m[39m[90m 131 |[39m           items[33m:[39m order[33m.[39mitems[33m,[39m
+ [90m     |[39m           [31m[1m^[22m[39m
+ [90m 132 |[39m           shippingAddress[33m:[39m {
+ [90m 133 |[39m             address[33m:[39m shipping[33m.[39maddress[33m,[39m
+ [90m 134 |[39m             city[33m:[39m shipping[33m.[39mcity[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null
