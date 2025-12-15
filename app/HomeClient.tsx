@@ -45,7 +45,14 @@ interface HomeClientProps {
 
 const fadeInUp = {
     initial: { opacity: 0, y: 60 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.6, -0.05, 0.01, 0.99] } }
+    animate: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: 0.8,
+            ease: [0.6, -0.05, 0.01, 0.99] as [number, number, number, number]
+        }
+    }
 };
 
 const staggerContainer = {
