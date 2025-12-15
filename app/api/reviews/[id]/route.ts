@@ -7,7 +7,7 @@ import { logger } from '@/lib/logger'
 // PUT - Actualizar review
 export async function PUT(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions)
@@ -16,8 +16,10 @@ export async function PUT(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
+        const { id } = await params
+
         const review = await prisma.review.findUnique({
-            where: { id: params.id }
+            where: { id }
         })
 
         if (!review) {
@@ -33,7 +35,7 @@ export async function PUT(
         const { rating, title, comment, images } = body
 
         const updatedReview = await prisma.review.update({
-            where: { id: params.id },
+            where: { id },
             data: {
                 rating: rating || review.rating,
                 title: title || review.title,
@@ -52,7 +54,7 @@ export async function PUT(
 
         logger.info('Review updated', {
             context: 'REVIEWS_API',
-            metadata: { reviewId: params.id }
+            metadata: { reviewId: id }
         })
 
         return NextResponse.json(updatedReview)
@@ -65,7 +67,7 @@ export async function PUT(
 // DELETE - Eliminar review
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions)
@@ -74,8 +76,10 @@ export async function DELETE(
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
+        const { id } = await params
+
         const review = await prisma.review.findUnique({
-            where: { id: params.id }
+            where: { id }
         })
 
         if (!review) {
@@ -88,12 +92,12 @@ export async function DELETE(
         }
 
         await prisma.review.delete({
-            where: { id: params.id }
+            where: { id }
         })
 
         logger.info('Review deleted', {
             context: 'REVIEWS_API',
-            metadata: { reviewId: params.id }
+            metadata: { reviewId: id }
         })
 
         return NextResponse.json({ success: true })
@@ -106,11 +110,13 @@ export async function DELETE(
 // POST - Marcar review como útil
 export async function POST(
     request: NextRequest,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params
+
         const review = await prisma.review.update({
-            where: { id: params.id },
+            where: { id },
             data: {
                 helpfulCount: {
                     increment: 1
