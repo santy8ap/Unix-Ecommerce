@@ -48,9 +48,9 @@ export default function MyOrdersPage() {
       const res = await fetch('/api/orders')
       if (!res.ok) throw new Error('Error al cargar órdenes')
       const data = await res.json()
-      
+
       let sortedOrders = Array.isArray(data) ? data : []
-      
+
       // Aplicar ordenamiento
       switch (sortBy) {
         case 'oldest':
@@ -66,7 +66,7 @@ export default function MyOrdersPage() {
         default:
           sortedOrders = sortedOrders.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       }
-      
+
       setOrders(sortedOrders)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error desconocido')
@@ -76,9 +76,9 @@ export default function MyOrdersPage() {
   }
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('es-ES', { 
-      year: 'numeric', 
-      month: 'long', 
+    return new Date(date).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -109,34 +109,38 @@ export default function MyOrdersPage() {
       <Navbar />
 
       {/* Header */}
-      <section className="pt-24 pb-8 bg-gradient-to-r from-red-600 via-red-600 to-red-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative pt-32 pb-12 overflow-hidden bg-slate-900">
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-red-900 to-slate-900" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/20 rounded-full blur-3xl animate-pulse" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center justify-between flex-wrap gap-4"
           >
-            <div className="flex items-center gap-4">
-              <motion.div 
+            <div className="flex items-center gap-6">
+              <motion.div
                 whileHover={{ scale: 1.1, rotate: -5 }}
-                className="p-3 bg-white/20 backdrop-blur rounded-xl"
+                className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 shadow-xl"
               >
-                <Package className="w-8 h-8" />
+                <Package className="w-10 h-10 text-white" />
               </motion.div>
               <div>
-                <h1 className="text-4xl font-bold">Mis Órdenes</h1>
-                <p className="text-red-100 mt-1">Historial y estado de tus compras</p>
+                <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2">Mis Órdenes</h1>
+                <p className="text-red-200 text-lg font-medium">Historial y estado de tus compras</p>
               </div>
             </div>
-            
+
             {orders.length > 0 && (
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="bg-white/10 backdrop-blur rounded-xl p-4"
+                className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg"
               >
-                <p className="text-red-100 text-sm">Total gastado</p>
-                <p className="text-3xl font-bold">${totalSpent.toFixed(2)}</p>
+                <p className="text-red-200 text-sm font-medium uppercase tracking-wider mb-1">Total gastado</p>
+                <p className="text-4xl font-black text-white">${totalSpent.toFixed(2)}</p>
               </motion.div>
             )}
           </motion.div>
@@ -147,7 +151,7 @@ export default function MyOrdersPage() {
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {error && (
           <motion.div className="mb-6">
-            <Alert 
+            <Alert
               variant="error"
               title="Error"
               description={error}
@@ -198,7 +202,7 @@ export default function MyOrdersPage() {
                 {orders.map((order, idx) => {
                   const statusInfo = getOrderStatus(order)
                   const isExpanded = expandedOrderId === order.id
-                  
+
                   return (
                     <motion.div
                       key={order.id}
@@ -226,7 +230,7 @@ export default function MyOrdersPage() {
                           </div>
 
                           {/* Status Badge */}
-                          <Badge 
+                          <Badge
                             label={statusInfo.label}
                             variant={statusInfo.color as any}
                             size="md"
@@ -306,7 +310,7 @@ export default function MyOrdersPage() {
                                   </div>
                                   <div>
                                     <p className="text-gray-600 text-sm">Estado</p>
-                                    <Badge 
+                                    <Badge
                                       label={statusInfo.label}
                                       variant={statusInfo.color as any}
                                       size="sm"

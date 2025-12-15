@@ -1,103 +1,88 @@
 'use client'
 
+import { useState, useMemo, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ShoppingCart, Heart, Eye } from 'lucide-react'
 import Link from 'next/link'
-import Image from 'next/image'
-import { useState } from 'react'
-import { Heart, ShoppingCart, Zap, TrendingUp, Eye } from 'lucide-react'
-import { useWishlist } from '@/context/WishlistContext'
 import { useCart } from '@/context/CartContext'
+import { useWishlist } from '@/context/WishlistContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { toast } from 'sonner'
-import { motion } from 'framer-motion'
-import QuickViewModal from './QuickViewModal'
+import { getProductImage, parseJSON } from '@/lib/utils'
+import { Product } from '@/types'
+import RecommendationBadge from './RecommendationBadge'
 
 interface ProductCardProps {
-  product: {
-    id: string
-    name: string
-    price: number
-    images: string[] | string
-    category: string
-    stock?: number
-    rating?: number
-    featured?: boolean
-    originalPrice?: number
+  product: Product & {
+    isRecommendedColor?: boolean
+    isRecommendedStyle?: boolean
+    isRecommended?: boolean
   }
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const [imgError, setImgError] = useState(false)
+  const { t } = useLanguage()
+  const { addItem } = useCart()
+  const { addItem: addToWishlist, items: wishlistItems } = useWishlist()
+
+  const [selectedSize, setSelectedSize] = useState('')
+  const [selectedColor, setSelectedColor] = useState('')
+  const [imageLoaded, setImageLoaded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [showQuickView, setShowQuickView] = useState(false)
-  const { isFavorite, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlist()
-  const { addItem: addToCart } = useCart()
 
-  const favorite = isFavorite(product.id)
+  const isInWishlist = wishlistItems.some((item) => item.productId === product.id)
 
-  const getImageUrl = () => {
-    if (imgError) return '/placeholder.jpg'
-    if (Array.isArray(product.images) && product.images.length > 0) {
-      return product.images[0]
-    }
-    if (typeof product.images === 'string') {
-      try {
-        const parsed = JSON.parse(product.images)
-        return Array.isArray(parsed) && parsed.length > 0 ? parsed[0] : '/placeholder.jpg'
-      } catch {
-        return product.images || '/placeholder.jpg'
-      }
-    }
-    return '/placeholder.jpg'
-  }
+  const sizes = useMemo(() => {
+    return Array.isArray(product.sizes) ? product.sizes : []
+  }, [product.sizes])
 
-  const imageUrl = getImageUrl()
-  const isOutOfStock = product.stock === 0
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price
-  const discountPercentage = hasDiscount
-    ? Math.round((((product.originalPrice || 0) - product.price) / (product.originalPrice || 1)) * 100)
-    : 0
-  const lowStock = product.stock && product.stock > 0 && product.stock <= 5
+  const colors = useMemo(() => {
+    return Array.isArray(product.colors) ? product.colors : []
+  }, [product.colors])
 
-  const handleToggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (favorite) {
-      removeFromWishlist(product.id)
-      toast.success('Removido de favoritos')
-    } else {
-      addToWishlist({
-        productId: product.id,
-        name: product.name,
-        price: product.price,
-        image: imageUrl
-      })
-      toast.success('Agregado a favoritos')
-    }
-  }
+  // Initialize defaults
+  useEffect(() => {
+    if (sizes.length > 0 && !selectedSize) setSelectedSize(sizes[0])
+    if (colors.length > 0 && !selectedColor) setSelectedColor(colors[0])
+  }, [sizes, colors, selectedSize, selectedColor])
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isOutOfStock) {
-      toast.error('Producto agotado')
+    // Double check strictly if we want to force selection
+    if ((sizes.length > 0 && !selectedSize) || (colors.length > 0 && !selectedColor)) {
+      toast.error(t('notifications.error.selectSizeColor'))
       return
     }
 
-    try {
-      addToCart({
+    addItem({
+      productId: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      size: selectedSize || (sizes[0] as string) || 'Standard',
+      color: selectedColor || (colors[0] as string) || 'Standard',
+      image: getProductImage(product.images),
+      stock: product.stock,
+    })
+    toast.success(t('notifications.success.productAdded'))
+  }
+
+  const handleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!isInWishlist) {
+      addToWishlist({
         productId: product.id,
         name: product.name,
         price: product.price,
-        quantity: 1,
-        size: 'M',
-        color: 'Blanco',
-        image: imageUrl,
-        stock: product.stock
+        image: getProductImage(product.images),
       })
-      toast.success('Agregado al carrito')
-    } catch {
-      toast.error('Error al agregar al carrito')
+      toast.success(t('notifications.success.addedToWishlist'))
+    } else {
+      toast.info(t('notifications.info.alreadyInWishlist'))
     }
   }
 
@@ -105,176 +90,124 @@ export default function ProductCard({ product }: ProductCardProps) {
     <Link href={`/productos/${product.id}`} className="block h-full">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -8 }}
-        className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 h-full flex flex-col cursor-pointer border border-gray-100"
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="group relative h-full bg-slate-900 rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10 border border-slate-800 hover:border-indigo-500/50"
       >
         {/* Image Container */}
-        <motion.div
-          className="relative h-64 overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200 group"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <Image
-            src={imageUrl}
+        <div className="relative aspect-[4/5] overflow-hidden bg-slate-800">
+          {!imageLoaded && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-slate-700 border-t-indigo-500 rounded-full animate-spin" />
+            </div>
+          )}
+          <motion.img
+            src={getProductImage(product.images)}
             alt={product.name}
-            onError={() => setImgError(true)}
-            className="object-cover group-hover:scale-110 transition-transform duration-500"
-            fill
-            sizes="(max-width: 640px) 100vw, 33vw"
-            unoptimized
+            loading="lazy"
+            decoding="async"
+            className={`w-full h-full object-cover transition-all duration-700 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            onLoad={() => setImageLoaded(true)}
           />
 
           {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2 z-10">
-            {product.featured && (
-              <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="bg-yellow-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg"
-              >
-                <Zap className="w-3 h-3 fill-current" />
-                Destacado
-              </motion.div>
+          <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+            {/* UNIX AI Recommendation */}
+            {product.isRecommended && (
+              <RecommendationBadge
+                isRecommendedColor={product.isRecommendedColor}
+                isRecommendedStyle={product.isRecommendedStyle}
+                variant="compact"
+              />
             )}
-            {discountPercentage > 0 && (
-              <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg"
-              >
-                -{discountPercentage}%
-              </motion.div>
+            {product.stock < 10 && product.stock > 0 && (
+              <span className="px-3 py-1 bg-amber-500/20 text-amber-300 text-[10px] font-bold uppercase tracking-wider rounded-full border border-amber-500/30 backdrop-blur-md">
+                Low Stock
+              </span>
             )}
-            {lowStock && !isOutOfStock && (
-              <motion.div
-                initial={{ scale: 0.8 }}
-                animate={{ scale: 1 }}
-                className="bg-orange-500 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg"
-              >
-                <TrendingUp className="w-3 h-3" />
-                Pocas unidades
-              </motion.div>
-            )}
-            <div className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider shadow-lg">
-              {product.category}
-            </div>
-          </div>
-
-          {/* Stock Indicator */}
-          {isOutOfStock && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-black/60 flex items-center justify-center"
-            >
-              <span className="text-white font-bold text-2xl">Agotado</span>
-            </motion.div>
-          )}
-
-          {/* Action Buttons Overlay */}
-          {isHovered && !isOutOfStock && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end justify-center gap-3 p-4"
-            >
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleToggleFavorite}
-                className={`p-3 rounded-full transition transform shadow-lg ${favorite
-                  ? 'bg-red-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-red-50'
-                  }`}
-                title={favorite ? 'Remover de favoritos' : 'Agregar a favoritos'}
-              >
-                <Heart className="w-6 h-6" fill={favorite ? 'currentColor' : 'none'} />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddToCart}
-                className="p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition transform shadow-lg font-bold"
-                title="Agregar al carrito"
-              >
-                <ShoppingCart className="w-6 h-6" />
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  setShowQuickView(true)
-                }}
-                className="p-3 rounded-full bg-white text-gray-900 hover:bg-gray-100 transition transform shadow-lg"
-                title="Vista rápida"
-              >
-                <Eye className="w-6 h-6" />
-              </motion.button>
-            </motion.div>
-          )}
-        </motion.div>
-
-        {/* Content */}
-        <div className="p-6 flex flex-col flex-grow">
-          {/* Category & Rating Row */}
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+            <span className="px-3 py-1 bg-slate-900/80 backdrop-blur text-slate-200 text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm border border-slate-700">
               {product.category}
             </span>
-            {product.rating && (
-              <div className="flex items-center gap-1 text-sm">
-                <span className="text-yellow-400">★</span>
-                <span className="font-bold text-gray-700">{product.rating}</span>
-              </div>
-            )}
           </div>
 
-          {/* Name */}
-          <h3 className="font-bold text-lg text-gray-900 line-clamp-2 mb-3 hover:text-red-600 transition">
+          {/* Wishlist Button */}
+          <motion.button
+            onClick={handleWishlist}
+            className="absolute top-4 right-4 p-2.5 bg-slate-900/80 backdrop-blur rounded-full shadow-lg hover:bg-slate-800 transition-colors z-20 border border-slate-700"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+          >
+            <Heart className={`w-4 h-4 ${isInWishlist ? 'fill-primary text-primary' : 'text-slate-400'}`} />
+          </motion.button>
+
+          {/* Quick Actions Overlay */}
+          <AnimatePresence>
+            {isHovered && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ duration: 0.2 }}
+                className="absolute inset-x-4 bottom-4 z-20"
+              >
+                <div className="p-4 bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-700/50">
+                  {/* Size Selector */}
+                  {sizes.length > 0 && (
+                    <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-hide">
+                      {(Array.isArray(sizes) ? sizes : []).slice(0, 4).map((size: string) => (
+                        <button
+                          key={size}
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setSelectedSize(size)
+                          }}
+                          className={`flex-shrink-0 w-8 h-8 text-xs font-medium rounded-lg transition-all ${selectedSize === size
+                            ? 'bg-primary text-white shadow-md shadow-primary/20'
+                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                            }`}
+                        >
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleAddToCart}
+                      className="flex-1 bg-primary text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      Add
+                    </button>
+                    <div
+                      className="px-3 py-2.5 bg-slate-800 text-slate-300 rounded-xl hover:bg-slate-700 transition-colors flex items-center justify-center cursor-pointer"
+                    >
+                      <Eye className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Product Info */}
+        <div className="p-5">
+          <h3 className="font-bold text-white text-lg leading-tight mb-2 line-clamp-1 group-hover:text-primary transition-colors">
             {product.name}
           </h3>
-
-          {/* Pricing */}
-          <div className="mb-4 space-y-1">
-            <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-red-600">
-                ${product.price.toFixed(2)}
-              </span>
-              {hasDiscount && (
-                <span className="text-lg text-gray-400 line-through">
-                  ${product.originalPrice?.toFixed(2)}
-                </span>
-              )}
-            </div>
-            {lowStock && !isOutOfStock && (
-              <p className="text-xs text-orange-600 font-semibold">
-                Solo {product.stock} {product.stock === 1 ? 'unidad' : 'unidades'} disponibles
-              </p>
-            )}
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl font-black text-slate-200">
+              ${product.price.toFixed(2)}
+            </span>
           </div>
-
-          {/* CTA Button */}
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="mt-auto w-full"
-          >
-            <div className="w-full px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition font-bold text-center shadow-md hover:shadow-lg">
-              Ver Detalles
-            </div>
-          </motion.div>
         </div>
       </motion.div>
-
-      {/* QuickView Modal */}
-      <QuickViewModal
-        product={product}
-        isOpen={showQuickView}
-        onClose={() => setShowQuickView(false)}
-      />
     </Link>
   )
 }

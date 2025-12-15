@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../../auth/[...nextauth]/route'
-
-// Helper para parsear JSON
-function parseJSON(str: string): any {
-  try {
-    return JSON.parse(str)
-  } catch {
-    return []
-  }
-}
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 // GET - Obtener un producto
 export async function GET(
@@ -30,13 +21,8 @@ export async function GET(
       )
     }
 
-    // Parsear campos JSON
-    return NextResponse.json({
-      ...product,
-      images: parseJSON(product.images),
-      sizes: parseJSON(product.sizes),
-      colors: parseJSON(product.colors)
-    })
+    // Return product directly as it now contains native arrays
+    return NextResponse.json(product)
   } catch (error) {
     return NextResponse.json(
       { error: 'Error al obtener producto' },
@@ -62,12 +48,19 @@ export async function PUT(
     }
 
     const body = await request.json()
-
-    // Convertir arrays a strings si es necesario
     const dataToUpdate: any = { ...body }
-    if (body.images) dataToUpdate.images = typeof body.images === 'string' ? body.images : JSON.stringify(body.images)
-    if (body.sizes) dataToUpdate.sizes = typeof body.sizes === 'string' ? body.sizes : JSON.stringify(body.sizes)
-    if (body.colors) dataToUpdate.colors = typeof body.colors === 'string' ? body.colors : JSON.stringify(body.colors)
+
+    // Ensure we save arrays, handling potential legacy JSON strings
+    if (body.images) {
+      dataToUpdate.images = typeof body.images === 'string' ? JSON.parse(body.images) : body.images
+    }
+    if (body.sizes) {
+      dataToUpdate.sizes = typeof body.sizes === 'string' ? JSON.parse(body.sizes) : body.sizes
+    }
+    if (body.colors) {
+      dataToUpdate.colors = typeof body.colors === 'string' ? JSON.parse(body.colors) : body.colors
+    }
+
     if (body.price) dataToUpdate.price = parseFloat(body.price)
     if (body.stock !== undefined) dataToUpdate.stock = parseInt(body.stock)
 
@@ -76,14 +69,9 @@ export async function PUT(
       data: dataToUpdate
     })
 
-    // Devolver con campos parseados
-    return NextResponse.json({
-      ...product,
-      images: parseJSON(product.images),
-      sizes: parseJSON(product.sizes),
-      colors: parseJSON(product.colors)
-    })
+    return NextResponse.json(product)
   } catch (error) {
+    console.error('Update error:', error)
     return NextResponse.json(
       { error: 'Error al actualizar producto' },
       { status: 500 }

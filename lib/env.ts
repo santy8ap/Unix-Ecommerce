@@ -23,10 +23,12 @@ const optionalEnvVars = {
     'CLOUDINARY_API_KEY': 'Image uploads',
     'CLOUDINARY_API_SECRET': 'Image uploads',
 
-    // Payments (at least one should be configured)
-    'NEXT_PUBLIC_PAYPAL_CLIENT_ID': 'PayPal payments',
-    'NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY': 'Stripe payments',
-    'NEXT_PUBLIC_COINBASE_COMMERCE_API_KEY': 'Crypto payments',
+    // Bitcoin/Crypto Payments
+    'NEXT_PUBLIC_COINBASE_COMMERCE_API_KEY': 'Bitcoin/Crypto payments',
+    'COINBASE_COMMERCE_WEBHOOK_SECRET': 'Coinbase webhook verification',
+
+    // Gemini AI
+    'GEMINI_API_KEY': 'AI features',
 } as const
 
 export function validateEnv() {
@@ -47,14 +49,11 @@ export function validateEnv() {
         }
     })
 
-    // Check if at least one payment method is configured
-    const hasPayment =
-        !!process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID ||
-        !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-        !!process.env.NEXT_PUBLIC_COINBASE_COMMERCE_API_KEY
+    // Check if payment method is configured
+    const hasPayment = !!process.env.NEXT_PUBLIC_COINBASE_COMMERCE_API_KEY
 
     if (!hasPayment) {
-        warnings.push('⚠️  No payment gateway configured. Add at least one payment method.')
+        warnings.push('⚠️  Bitcoin payment gateway not configured.')
     }
 
     // Log results

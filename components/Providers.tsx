@@ -18,24 +18,25 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                             richColors
                             closeButton
                             expand={true}
-                            theme="light"
+                            theme="dark"
                             visibleToasts={3}
                             toastOptions={{
                                 style: {
-                                    background: 'white',
-                                    border: '1px solid #e5e7eb',
+                                    background: '#0f172a',
+                                    border: '1px solid #1e293b',
+                                    color: '#f8fafc',
                                     borderRadius: '12px',
                                     padding: '16px',
-                                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                                    boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3)',
                                 },
                                 duration: 4000,
                                 classNames: {
                                     toast: 'flex gap-3 items-center',
-                                    title: 'font-semibold text-gray-900 text-sm',
-                                    description: 'text-xs text-gray-600 mt-1',
+                                    title: 'font-semibold text-white text-sm',
+                                    description: 'text-xs text-slate-400 mt-1',
                                     actionButton: 'bg-red-600 text-white px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red-700 transition',
-                                    cancelButton: 'bg-gray-200 text-gray-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-gray-300 transition',
-                                    closeButton: 'absolute -top-2 -right-2 bg-white border border-gray-200 rounded-full p-1 hover:bg-gray-100 transition',
+                                    cancelButton: 'bg-slate-800 text-slate-300 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-slate-700 transition',
+                                    closeButton: 'absolute -top-2 -right-2 bg-slate-800 border border-slate-700 text-slate-400 rounded-full p-1 hover:bg-slate-700 hover:text-white transition',
                                 },
                             }}
                         />

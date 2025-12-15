@@ -1,312 +1,276 @@
-# 🎨 Red Estampación - E-Commerce Platform 
+# 🛍️ Red Estampación - AI-Powered Fashion E-commerce
 
+A next-generation e-commerce platform for fashion and streetwear, featuring AI-powered styling assistance, personalized outfit generation, and advanced color analysis.
 
-> **Status**: ✅ **FULLY FUNCTIONAL** | Production Ready | All Features Integrated
+![Next.js](https://img.shields.io/badge/Next.js-16.0.3-black?style=flat-square&logo=next.jsamp;logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-blue?style=flat-square&logo=typescript&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-5.22.0-teal?style=flat-square&logo=prisma&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-Una plataforma de e-commerce moderna y completa para venta de ropa estampada, construida con Next.js 16, React 19, Tailwind CSS y tecnologías de punta.
+## ✨ Features
 
----
+### 🤖 AI Styling Assistant
+- **Conversational AI Chat**: Get personalized fashion advice powered by intelligent fallback systems
+- **Smart Outfit Generation**: AI creates complete outfits from your catalog based on preferences
+- **Style Detection**: Automatically identifies your style (Anime, Streetwear, Formal, Casual, etc.)
+- **Preference Learning**: Saves and learns from your interactions
 
-## 🚀 Quick Start
+### 🎨 Advanced Personalization
+- **Color Analysis (Colorimetry)**: Discover which colors suit you best based on skin tone
+- **Virtual Closet**: Organize and manage your wardrobe digitally
+- **Smart Product Recommendations**: AI-powered suggestions based on your style and history
 
-### 1. Instalar y Ejecutar (5 minutos)
+### 🛒 Complete E-commerce
+- **Product Catalog**: Browse streetwear, anime merch, and fashion items
+- **Shopping Cart & Wishlist**: Seamless shopping experience
+- **Order Management**: Full order tracking and history
+- **User Reviews**: Rate and review products
+- **Related Products**: Smart product suggestions
 
-```bash
-# Instalar dependencias
-npm install
+### 💳 Multiple Payment Methods
+- **Credit/Debit Cards**: Secure payment processing
+- **Bitcoin (BTC)**: Cryptocurrency payment integration via Coinbase Commerce
+- **Future-ready**: Extensible payment system
 
-# Setup base de datos (primera vez)
-npx prisma migrate deploy
-npx prisma db seed
+### 📧 Advanced Communication
+- **Automated Emails**: Order confirmations, welcome messages
+- **Cron Jobs**: Daily reports, cart reminders, data cleanup
+- **Real-time Notifications**: Stay updated on order status
 
-# Iniciar servidor
-npm run dev
+### 🎯 User Experience
+- **Dark/Light Theme**: Elegant design with theme switching
+- **Responsive Design**: Perfect on desktop, tablet, and mobile
+- **Multi-language**: i18n support (Spanish/English)
+- **Glassmorphism UI**: Modern, premium design aesthetic
+- **Smooth Animations**: Powered by Framer Motion
 
-# Abre http://localhost:3000
-```
-
-### 2. Primeras Pruebas
-
-- ✅ **Login**: Haz clic en "Iniciar sesión" → Google
-- ✅ **Ver Productos**: Navega a /productos
-- ✅ **Agregar al Carrito**: Click en producto → "Agregar al carrito"
-- ✅ **Checkout**: Ir a carrito → Checkout → Completar formulario
-- ✅ **Email**: Revisa tu inbox para confirmación de orden
-- ✅ **Admin**: Login como admin en /admin/productos/nuevo
-
----
-
-## 🎯 Características Principales
-
-### 🛍️ Para Clientes
-- ✅ **Catálogo Completo**: Búsqueda + filtros por categoría, color, tamaño
-- ✅ **Carrito Persistente**: localStorage + cálculo automático
-- ✅ **Checkout Validado**: Validaciones Yup en tiempo real
-- ✅ **Historial de Órdenes**: Mis órdenes autenticadas
-- ✅ **Wishlist**: Guardar favoritos
-- ✅ **Google OAuth**: Login seguro con Google
-- ✅ **Notificaciones**: Toast en todas las acciones
-- ✅ **Multiidioma**: Español e Inglés (i18n)
-- ✅ **Responsive**: 100% mobile-friendly
-
-### 👨‍💼 Para Administradores
-- ✅ **Panel Admin**: Dashboard completo
-- ✅ **Crear Productos**: Formulario con Cloudinary upload
-- ✅ **Gestión de Stock**: Actualizar inventario
-- ✅ **Filtros Avanzados**: Búsqueda de productos
-- ✅ **Validaciones**: Yup en tiempo real
-- ✅ **Múltiples Imágenes**: Drag & drop + reorder
-
-### 📧 Automatización
-- ✅ **Email Confirmación**: Automático después de compra
-- ✅ **Email Diario**: Resumen de órdenes (9:00 AM)
-- ✅ **Cron Jobs**: Recordatorio de carrito (cada 6h)
-- ✅ **Templates HTML**: Profesionales y responsivos
-
----
-
-
-Ver `SETUP_GUIDE.md` para detalles completos.
-
-## 🚀 Tecnologías Utilizadas
+## 🚀 Tech Stack
 
 ### Frontend
-- **Next.js 16.0.3** - React framework moderno
-- **React 19.2.0** - UI library
-- **TypeScript** - Type safety
-- **Tailwind CSS 4.0+** - Utility-first styling
-- **Framer Motion 12.23.24** - Smooth animations
-- **Lucide React 0.554.0** - Modern icons
-- **React Hook Form 7.66.1** - Form management
-- **Yup 1.4.0** - Schema validation
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: Custom components with glassmorphism
+- **Animations**: Framer Motion
+- **Icons**: Lucide React
 
-### Backend & Services
-- **Next.js API Routes** - Serverless backend
-- **Prisma 6.19.0** - ORM for database
-- **PostgreSQL** - Database
-- **NextAuth.js v4.24.7** - Authentication
-- **Nodemailer 7.0.11** - Email service
-- **Cloudinary 2.8.0** - Image hosting
-- **node-cron 3.0.3** - Scheduled tasks
+### Backend
+- **API**: Next.js API Routes
+- **Database**: PostgreSQL (Vercel Postgres)
+- **ORM**: Prisma
+- **Authentication**: NextAuth.js
+- **File Upload**: Cloudinary
+- **Email**: Nodemailer
 
-### Testing & Quality
-- **Cypress** - E2E testing
-- **ESLint** - Code linting
-- **TypeScript** - Static type checking
+### AI & External Services
+- **AI**: Google Gemini API (with intelligent fallback)
+- **Payments**: Coinbase Commerce (Bitcoin)
+- **Hosting**: Vercel
+- **Storage**: Vercel Postgres
 
-## 📋 Requisitos Previos
+## 📦 Installation
 
-- Node.js 18+ 
-- npm o yarn
+### Prerequisites
+- Node.js 20+ 
 - PostgreSQL database
-- Cloudinary account (para manejo de imágenes)
-- Google OAuth credentials (para autenticación)
+- npm or yarn
 
-## 🔧 Instalación
+### Setup
 
-1. **Clonar el repositorio**
-```bash
-git clone <https://github.com/santy8ap/Red-Estampacion>
-cd Red-Estampacion
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/red-estampacion.git
+   cd red-estampacion
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create `.env` file:
+   ```env
+   # Database
+   DATABASE_URL="postgresql://..."
+   
+   # NextAuth
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="your-secret-here"
+   
+   # Cloudinary
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloud-name"
+   CLOUDINARY_API_KEY="your-api-key"
+   CLOUDINARY_API_SECRET="your-api-secret"
+   
+   # Email (optional)
+   SMTP_USER="your-email@gmail.com"
+   SMTP_PASS="your-app-password"
+   
+   # Google Gemini (optional - has fallback)
+   GEMINI_API_KEY="your-gemini-key"
+   
+   # Coinbase Commerce (optional)
+   COINBASE_COMMERCE_API_KEY="your-coinbase-key"
+   ```
+
+4. **Set up the database**
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   npx prisma db seed
+   ```
+
+5. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+6. **Open the app**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## 🗂️ Project Structure
+
 ```
-
-2. **Instalar dependencias**
-```bash
-npm install
-```
-
-3. **Configurar variables de entorno**
-Crear `.env.local`:
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/red_estampacion"
-
-# NextAuth
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key"
-
-# Google OAuth
-GOOGLE_ID="your-google-client-id"
-GOOGLE_SECRET="your-google-client-secret"
-
-# Cloudinary
-NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your-cloud-name"
-CLOUDINARY_API_KEY="your-api-key"
-CLOUDINARY_API_SECRET="your-api-secret"
-
-# Email (SMTP)
-SMTP_HOST="smtp.gmail.com"
-SMTP_PORT=587
-SMTP_USER="your-email@gmail.com"
-SMTP_PASSWORD="your-app-password"
-SMTP_FROM="noreply@red-estampacion.com"
-```
-
-4. **Configurar base de datos**
-```bash
-npx prisma migrate dev --name init
-npx prisma db seed
-```
-
-5. **Ejecutar desarrollo**
-```bash
-npm run dev
-```
-
-Acceder a [http://localhost:3000](http://localhost:3000)
-
-## 📁 Estructura del Proyecto
-
-```
-Red-Estampacion/
-├── app/                          # Next.js app directory
-│   ├── api/                      # API routes
-│   ├── admin/                    # Admin dashboard
-│   ├── auth/                     # Authentication pages
-│   ├── productos/                # Product listing & detail
-│   ├── carrito/                  # Shopping cart
-│   ├── checkout/                 # Checkout flow
-│   ├── colecciones/              # Collections
-│   └── mis-ordenes/              # User orders
-├── components/                   # Reusable React components
-│   ├── Navbar.tsx
-│   ├── Footer.tsx
-│   ├── ProductCard.tsx
-│   ├── ProductForm.tsx
+red-estampacion/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   │   ├── ai/           # AI endpoints (chat, outfits, vision)
+│   │   ├── auth/         # Authentication
+│   │   ├── products/     # Product management
+│   │   ├── orders/       # Order processing
+│   │   └── ...
+│   ├── (auth)/           # Auth pages (login, register)
+│   ├── admin/            # Admin dashboard
+│   ├── ai-stylist/       # AI styling assistant
+│   ├── productos/        # Product catalog
 │   └── ...
-├── context/                      # React Context (Cart, Language)
-├── hooks/                        # Custom React hooks
-├── lib/                          # Utility functions
-│   ├── prisma.ts                # Prisma client
-│   ├── validations/             # Yup schemas
-│   └── email/                   # Email service
-├── prisma/                       # Database schema & migrations
-├── public/                       # Static assets
-└── ...
+├── components/            # React components
+│   ├── ui/               # Reusable UI components
+│   ├── navbar/           # Navigation
+│   └── ...
+├── lib/                   # Utilities and helpers
+│   ├── ai/               # AI logic (vision, chat)
+│   ├── prisma.ts         # Database client
+│   ├── logger.ts         # Logging utility
+│   └── ...
+├── prisma/               # Database schema and migrations
+│   └── schema.prisma
+├── public/               # Static assets
+└── __tests__/            # Test files
 ```
 
-## 🎯 Rutas Principales
+## 🎯 Key Features Explained
 
-### Cliente
-- `/` - Página de inicio
-- `/productos` - Catálogo de productos
-- `/productos/[id]` - Detalle del producto
-- `/carrito` - Carrito de compras
-- `/checkout` - Proceso de compra
-- `/colecciones` - Colecciones de productos
-- `/mis-ordenes` - Historial de órdenes
-- `/auth/signin` - Iniciar sesión
+### AI Styling Assistant (`/ai-stylist`)
+The AI Stylist uses a hybrid approach:
+- **Primary**: Google Gemini API for natural language processing
+- **Fallback**: Local intelligent system that works without external APIs
+- Detects user preferences (anime, streetwear, formal, etc.)
+- Generates complete outfits from your product catalog
+- Saves conversations and preferences to the database
 
-### Administrador
-- `/admin` - Dashboard principal
-- `/admin/productos/nuevo` - Crear nuevo producto
-- `/admin/productos/[id]` - Editar producto
+### Color Analysis (Colorimetry)
+- Upload a selfie to get AI-powered skin tone analysis
+- Discover your seasonal color palette (Spring, Summer, Autumn, Winter)
+- Get personalized color recommendations
+- Results stored for future outfit suggestions
 
-## 👤 Cuentas de Prueba
+### Virtual Closet
+- Add items from your purchases or manual entry
+- Track outfit combinations
+- Get suggestions based on closet items
+- Monitor wear frequency
 
-**Administrador:**
-- Email: admin@red-estampacion.com
-- Contraseña: Generada automáticamente (ver base de datos)
-
-**Cliente Regular:**
-- Usar Google OAuth para autenticarse
-
-## 🔐 Seguridad
-
-- ✅ Autenticación con NextAuth.js
-- ✅ Validación de datos en frontend y backend
-- ✅ Protección de rutas por roles
-- ✅ Variables de entorno protegidas
-- ✅ HTTPS en producción recomendado
-- ✅ CSRF protection
-
-## 📊 Base de Datos
-
-### Modelos principales
-- `User` - Usuarios del sistema
-- `Product` - Productos del catálogo
-- `Order` - Órdenes de compra
-- `OrderItem` - Items de órdenes
-- `Collection` - Colecciones de productos
-
-Ver `prisma/schema.prisma` para detalles completos.
+### Bitcoin Payments
+- Integrated with Coinbase Commerce
+- QR code generation for easy payment
+- Automatic order confirmation upon payment
+- Webhook handling for payment status
 
 ## 🧪 Testing
 
 ```bash
-# Tests unitarios
+# Run all tests
 npm test
 
-# E2E tests con Cypress
-npm run cypress
-npm run cypress:open  # interfaz visual
+# Run tests in watch mode
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
 ```
 
-## 📈 Performance
+## 📱 Deployment
 
-- Optimización de imágenes con Cloudinary
-- Code splitting automático
-- Server-side rendering donde sea necesario
-- Client-side rendering para interactividad
-- Caché de datos inteligente
+### Vercel (Recommended)
 
-## 🌐 Internacionalización
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Ready for production"
+   git push origin main
+   ```
 
-Soporta Español e Inglés. La configuración se encuentra en:
-- `i18n/messages/es.json` - Traducciones en español
-- `i18n/messages/en.json` - Traducciones en inglés
+2. **Deploy on Vercel**
+   - Import your repository at [vercel.com](https://vercel.com)
+   - Add environment variables
+   - Deploy!
 
-## 📧 Notificaciones por Email
+3. **Set up database**
+   - Create a Vercel Postgres database
+   - Run migrations: `npx prisma db push`
+   - Seed data: `npm run prisma:seed`
 
-El sistema envía emails para:
-- Confirmación de registro
-- Confirmación de ordenes
-- Notificaciones de envío
-- Recordatorios de carrito abandonado
+### Environment Variables on Production
+Make sure to set all required environment variables in your Vercel project settings.
 
-## 🚢 Despliegue
+## 🔐 Admin Access
 
-### En Vercel (Recomendado)
-```bash
-npm install -g vercel
-vercel
-```
+Default admin credentials (change after first login):
+- Email: `admin@unix.com`
+- Password: `admin123`
 
-### En otros servidores
-```bash
-npm run build
-npm start
-```
+Admin features:
+- Product management (CRUD)
+- Order management
+- User management
+- Analytics dashboard
+- Inventory control
 
-## 📝 Changelog
+## 🤝 Contributing
 
-### v1.0.0 (Reciente)
-- ✨ Nueva página de signin profesional
-- ✨ Panel de admin mejorado con tabla interactiva
-- ✨ Formulario de productos con mejor UX
-- ✨ Sección de características mejorada
-- 🐛 Correcciones de validación en formularios
-- 🚀 Mejor manejo de errores
+Contributions are welcome! Please follow these steps:
 
-## 🤝 Contribuir
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-1. Fork el proyecto
-2. Crea una rama (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+## 📝 License
 
-## 📄 Licencia
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Este proyecto está licenciado bajo MIT. Ver `LICENSE` para más detalles.
+## 👨‍💻 Author
 
-## 👥 Soporte
+**Santiago** - [@santy8ap](https://github.com/santy8ap)
 
-Para soporte, contactar a:
-- Email: support@red-estampacion.com
-- Issues: GitHub Issues
-- Documentación: `/docs`
+## 🙏 Acknowledgments
+
+- Next.js team for the amazing framework
+- Vercel for hosting and database
+- Google Gemini for AI capabilities
+- All open-source contributors
+
+## 📧 Contact
+
+For questions or support, reach out via:
+- Email: santi@unix.com
+- GitHub Issues: [Create an issue](https://github.com/yourusername/red-estampacion/issues)
 
 ---
 
-**Hecho con ❤️ para Red Estampación**
+**Built with ❤️ using Next.js and AI**

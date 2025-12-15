@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Ruler, Palette } from 'lucide-react'
 
 interface ProductAttributesProps {
     formData: {
@@ -30,31 +30,35 @@ export default function ProductAttributes({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="space-y-4"
+            className="space-y-8"
         >
-            <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <span className="text-red-600 font-bold">4</span>
+            <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+                <div className="w-10 h-10 bg-pink-500/20 border border-pink-500/30 rounded-xl flex items-center justify-center">
+                    <Palette className="w-5 h-5 text-pink-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">Tallas y colores disponibles</h3>
+                <div>
+                    <h3 className="text-base font-black text-white">Variantes</h3>
+                    <p className="text-xs text-slate-400">Gestiona tallas y colores del producto</p>
+                </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-6">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-3">
-                        Tallas disponibles <span className="text-red-600">*</span>
+                    <label className="flex items-center gap-2 text-sm font-black text-white mb-4">
+                        <Ruler className="w-4 h-4 text-indigo-400" />
+                        Tallas Disponibles
                     </label>
-                    <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                    <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                         {sizes.map(size => (
                             <motion.button
                                 key={size}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
                                 type="button"
                                 onClick={() => toggleSize(size)}
-                                className={`px-4 py-3 rounded-lg border-2 font-bold text-center transition ${formData.sizes.includes(size)
-                                    ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/30'
-                                    : 'bg-white text-gray-700 border-gray-200 hover:border-red-400'
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`px-4 py-3.5 rounded-xl text-sm font-black transition-all ${formData.sizes.includes(size)
+                                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-500/30'
+                                    : 'bg-slate-800/50 text-slate-300 border border-slate-700 hover:border-indigo-500/50 hover:bg-slate-800'
                                     }`}
                             >
                                 {size}
@@ -62,47 +66,44 @@ export default function ProductAttributes({
                         ))}
                     </div>
                     {touched.sizes && errors.sizes && (
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-sm text-red-600 mt-2 flex items-center gap-1"
-                        >
-                            <AlertCircle className="w-4 h-4" />
+                        <p className="text-xs text-red-400 mt-3 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" />
                             {errors.sizes}
-                        </motion.p>
+                        </p>
                     )}
                 </div>
 
                 <div>
-                    <label className="block text-sm font-semibold text-gray-900 mb-3">
-                        Colores disponibles <span className="text-red-600">*</span>
+                    <label className="flex items-center gap-2 text-sm font-black text-white mb-4">
+                        <Palette className="w-4 h-4 text-purple-400" />
+                        Colores Disponibles
                     </label>
-                    <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                         {colors.map(color => (
                             <motion.button
                                 key={color}
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
                                 type="button"
                                 onClick={() => toggleColor(color)}
-                                className={`px-4 py-3 rounded-lg border-2 font-bold text-center transition ${formData.colors.includes(color)
-                                    ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/30'
-                                    : 'bg-white text-gray-700 border-gray-200 hover:border-red-400'
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`px-4 py-3.5 rounded-xl text-sm font-black transition-all flex items-center justify-center gap-2 ${formData.colors.includes(color)
+                                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/30'
+                                    : 'bg-slate-800/50 text-slate-300 border border-slate-700 hover:border-purple-500/50 hover:bg-slate-800'
                                     }`}
                             >
+                                <span
+                                    className="w-4 h-4 rounded-full border-2 border-white shadow-md"
+                                    style={{ backgroundColor: color.toLowerCase() === 'blanco' ? '#ffffff' : color.toLowerCase() === 'negro' ? '#000000' : color.toLowerCase() }}
+                                />
                                 {color}
                             </motion.button>
                         ))}
                     </div>
                     {touched.colors && errors.colors && (
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="text-sm text-red-600 mt-2 flex items-center gap-1"
-                        >
-                            <AlertCircle className="w-4 h-4" />
+                        <p className="text-xs text-red-400 mt-3 flex items-center gap-1 font-medium">
+                            <AlertCircle className="w-3 h-3" />
                             {errors.colors}
-                        </motion.p>
+                        </p>
                     )}
                 </div>
             </div>

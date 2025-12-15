@@ -5,9 +5,10 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Plus, Package } from 'lucide-react'
+import { ArrowLeft, Plus, Info, Sparkles, Zap, TrendingUp } from 'lucide-react'
 import ProductForm from '@/components/ProductForm'
-import Loading from '@/components/Loading'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export default function NewProductPage() {
     const { data: session, status } = useSession()
@@ -20,126 +21,156 @@ export default function NewProductPage() {
         }
 
         if (status === 'authenticated' && session?.user?.role !== 'ADMIN') {
-            alert('No tienes permisos de administrador')
             router.push('/')
             return
         }
-    }, [status, session])
+    }, [status, session, router])
 
     if (status === 'loading') {
-        return <Loading />
+        return (
+            <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+        )
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header with breadcrumb */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
-                    <div className="flex items-center gap-2 mb-6">
-                        <Link href="/admin" className="group">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold transition"
-                            >
-                                <ArrowLeft className="w-5 h-5" />
-                                Volver al Panel
-                            </motion.button>
-                        </Link>
-                    </div>
-
-                    <div className="flex items-start justify-between">
-                        <div>
-                            <h1 className="text-4xl font-black text-gray-900 mb-2 flex items-center gap-3">
-                                <div className="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl">
-                                    <Plus className="w-8 h-8 text-white" />
-                                </div>
-                                Crear Nuevo Producto
-                            </h1>
-                            <p className="text-gray-600 max-w-2xl">
-                                Completa el formulario a continuación para agregar un nuevo producto a tu catálogo. Asegúrate de incluir toda la información relevante y una imagen atractiva.
-                            </p>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Info boxes */}
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8"
-                >
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 flex items-start gap-3">
-                        <div className="mt-1 text-blue-600">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-blue-900">Campos requeridos</h3>
-                            <p className="text-sm text-blue-700">Marca con * los campos obligatorios que debes completar</p>
-                        </div>
-                    </div>
-
-                    <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
-                        <div className="mt-1 text-green-600">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 10 10.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                            </svg>
-                        </div>
-                        <div>
-                            <h3 className="font-semibold text-green-900">Imagen de portada</h3>
-                            <p className="text-sm text-green-700">La primera imagen será la que se muestre en el catálogo</p>
-                        </div>
-                    </div>
-                </motion.div>
-
-                {/* Form */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8"
-                >
-                    <ProductForm />
-                </motion.div>
-
-                {/* Help section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="mt-8 bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 rounded-xl p-6"
-                >
-                    <h3 className="font-semibold text-red-900 mb-3 flex items-center gap-2">
-                        <Package className="w-5 h-5" />
-                        Consejos para un mejor producto
-                    </h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-red-800">
-                        <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold">•</span>
-                            <span>Utiliza un nombre descriptivo y atractivo</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold">•</span>
-                            <span>Incluye detalles técnicos y especificaciones</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold">•</span>
-                            <span>Carga imágenes en alta calidad (mínimo 800x800px)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-red-600 font-bold">•</span>
-                            <span>Establece un precio competitivo y realista</span>
-                        </li>
-                    </ul>
-                </motion.div>
+        <div className="min-h-screen bg-slate-950">
+            {/* Background Effects */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-20 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] animate-blob" />
+                <div className="absolute bottom-20 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] animate-blob animation-delay-2000" />
             </div>
+
+            <Navbar />
+
+            <div className="relative z-10 pt-32 pb-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="mb-10">
+                    <Link
+                        href="/admin"
+                        className="inline-flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-indigo-400 transition-colors mb-6 group"
+                    >
+                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                        Volver al Dashboard
+                    </Link>
+
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm font-bold mb-4">
+                                <Plus className="w-4 h-4" />
+                                Nuevo Producto
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-black text-white mb-3">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-200 to-purple-200">
+                                    Agregar Producto
+                                </span>
+                            </h1>
+                            <p className="text-slate-400 text-lg">Crea un nuevo producto para tu tienda</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Form Area */}
+                    <div className="lg:col-span-2">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl shadow-2xl p-8"
+                        >
+                            <ProductForm />
+                        </motion.div>
+                    </div>
+
+                    {/* Sidebar / Help */}
+                    <div className="space-y-6">
+                        {/* Guidelines Card */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.1 }}
+                            className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border border-indigo-500/30 backdrop-blur-xl rounded-2xl p-6"
+                        >
+                            <div className="flex items-start gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center shrink-0">
+                                    <Info className="w-5 h-5 text-indigo-400" />
+                                </div>
+                                <div>
+                                    <h3 className="font-black text-white text-sm mb-2">Guía de Productos</h3>
+                                    <p className="text-xs text-slate-300 leading-relaxed">
+                                        Asegúrate de que las imágenes sean de alta calidad (mín 800x800px).
+                                        Los títulos claros y descripciones detalladas mejoran la visibilidad.
+                                    </p>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        {/* Quick Tips Card */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.2 }}
+                            className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl p-6"
+                        >
+                            <h3 className="font-black text-white text-sm mb-5 flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-indigo-400" />
+                                Tips Rápidos
+                            </h3>
+                            <ul className="space-y-4">
+                                <li className="flex items-start gap-3 text-xs text-slate-300">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0" />
+                                    <span>Usa nombres únicos para mejor SEO</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-xs text-slate-300">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-purple-400 mt-1.5 shrink-0" />
+                                    <span>Establece precios competitivos</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-xs text-slate-300">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 shrink-0" />
+                                    <span>Agrega múltiples imágenes para mejor conversión</span>
+                                </li>
+                                <li className="flex items-start gap-3 text-xs text-slate-300">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 shrink-0" />
+                                    <span>Selecciona todas las tallas y colores disponibles</span>
+                                </li>
+                            </ul>
+                        </motion.div>
+
+                        {/* Best Practices Card */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 rounded-2xl p-6 relative overflow-hidden"
+                        >
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <TrendingUp className="w-5 h-5 text-green-400" />
+                                    <h3 className="font-black text-white text-sm">Mejores Prácticas</h3>
+                                </div>
+                                <div className="space-y-3 text-xs text-slate-400">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                                        <span>Stock actualizado</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                                        <span>Descripciones completas</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                                        <span>Categorías correctas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </div>
+
+            <Footer />
         </div>
     )
 }

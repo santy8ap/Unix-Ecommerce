@@ -3,44 +3,78 @@
 import Link from 'next/link'
 import { useLanguage } from '@/context/LanguageContext'
 import { motion } from 'framer-motion'
-import { Facebook, Instagram, Twitter, Mail, MapPin, Phone, Heart } from 'lucide-react'
+import { Facebook, Instagram, Twitter, ArrowRight, Sparkles } from 'lucide-react'
+import NewsletterSignup from './NewsletterSignup'
 
 export default function Footer() {
-  const { locale, t } = useLanguage()
+  const { t } = useLanguage()
   const currentYear = new Date().getFullYear()
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 }
+  }
+
+  const exploreLinks = [
+    { label: t('nav.home'), href: '/' },
+    { label: t('nav.products'), href: '/productos' },
+    { label: t('nav.collections'), href: '/colecciones' },
+    { label: t('footer.faq'), href: '/faq' }
+  ]
+
+  const helpLinks = [
+    { label: t('footer.shipping'), href: '#' },
+    { label: t('footer.contact'), href: '#' },
+    { label: t('footer.privacy'), href: '#' },
+    { label: t('footer.terms'), href: '#' }
+  ]
+
   return (
-    <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white mt-auto">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="text-2xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">
-                Red Estampación
-              </span>
-            </h3>
-            <p className="text-gray-400 mb-4 text-sm">
-              {locale === 'es'
-                ? 'Las mejores camisas estampadas con diseños únicos y calidad premium.'
-                : 'The best printed shirts with unique designs and premium quality.'}
+    <footer className="relative bg-slate-950 text-slate-100 mt-auto overflow-hidden border-t border-slate-800">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8"
+        >
+          {/* Brand Section (4 cols) */}
+          <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
+            <Link href="/" className="inline-block group">
+              <h3 className="text-2xl font-black tracking-tight flex items-center gap-2">
+                <span className="text-white group-hover:text-primary transition-colors">
+                  UNIX
+                </span>
+                <Sparkles className="w-4 h-4 text-primary" />
+              </h3>
+            </Link>
+            <p className="text-slate-400 leading-relaxed max-w-sm text-sm">
+              {t('footer.description')}
             </p>
-            <div className="flex space-x-3">
+            <div className="flex gap-4">
               {[
-                { icon: Facebook, href: '#' },
-                { icon: Instagram, href: '#' },
-                { icon: Twitter, href: '#' }
+                { icon: Facebook, href: '#', label: 'Facebook' },
+                { icon: Instagram, href: '#', label: 'Instagram' },
+                { icon: Twitter, href: '#', label: 'Twitter' }
               ].map((social, i) => (
                 <motion.a
                   key={i}
                   href={social.href}
                   whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.9 }}
-                  className="bg-white/10 p-2.5 rounded-full hover:bg-red-600 transition-colors"
+                  whileTap={{ scale: 0.95 }}
+                  className="p-2.5 bg-slate-900 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-all border border-slate-800 shadow-sm"
+                  aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />
                 </motion.a>
@@ -48,93 +82,79 @@ export default function Footer() {
             </div>
           </motion.div>
 
-          {/* Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-          >
-            <h4 className="text-lg font-semibold mb-4">
-              {locale === 'es' ? 'Enlaces' : 'Links'}
+          {/* Explore Links (2 cols) */}
+          <motion.div variants={itemVariants} className="lg:col-span-2 lg:col-start-6 space-y-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+              {t('footer.explore')}
             </h4>
-            <ul className="space-y-2 text-sm">
-              {[
-                { href: '/productos', label: locale === 'es' ? 'Productos' : 'Products' },
-                { href: '/colecciones', label: locale === 'es' ? 'Colecciones' : 'Collections' },
-                { href: '/mis-ordenes', label: locale === 'es' ? 'Mis Órdenes' : 'My Orders' },
-              ].map((link, i) => (
+            <ul className="space-y-3">
+              {exploreLinks.map((link, i) => (
                 <li key={i}>
                   <Link
                     href={link.href}
-                    className="text-gray-400 hover:text-white hover:translate-x-1 inline-block transition-all duration-200"
+                    className="group flex items-center gap-2 text-slate-400 hover:text-indigo-400 text-sm transition-all"
                   >
-                    {link.label}
+                    <ArrowRight className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all" />
+                    <span className="group-hover:translate-x-1 transition-transform">{link.label}</span>
                   </Link>
                 </li>
               ))}
             </ul>
           </motion.div>
 
-          {/* Info */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            <h4 className="text-lg font-semibold mb-4">
-              {locale === 'es' ? 'Información' : 'Information'}
+          {/* Help Links (2 cols) */}
+          <motion.div variants={itemVariants} className="lg:col-span-2 space-y-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+              {t('footer.help')}
             </h4>
-            <ul className="space-y-2 text-sm text-gray-400">
-              <li>{locale === 'es' ? 'Sobre Nosotros' : 'About Us'}</li>
-              <li>{locale === 'es' ? 'Envíos' : 'Shipping'}</li>
-              <li>{locale === 'es' ? 'Devoluciones' : 'Returns'}</li>
-              <li>{locale === 'es' ? 'Términos y Condiciones' : 'Terms & Conditions'}</li>
+            <ul className="space-y-3">
+              {helpLinks.map((link, i) => (
+                <li key={i}>
+                  <Link
+                    href={link.href}
+                    className="group flex items-center gap-2 text-slate-400 hover:text-indigo-400 text-sm transition-all"
+                  >
+                    <ArrowRight className="w-3 h-3 text-primary opacity-0 group-hover:opacity-100 -ml-5 group-hover:ml-0 transition-all" />
+                    <span className="group-hover:translate-x-1 transition-transform">{link.label}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </motion.div>
 
-          {/* Contact */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-          >
-            <h4 className="text-lg font-semibold mb-4">
-              {locale === 'es' ? 'Contacto' : 'Contact'}
+          {/* Newsletter (4 cols) */}
+          <motion.div variants={itemVariants} className="lg:col-span-4 space-y-6">
+            <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+              {t('footer.newsletter')}
             </h4>
-            <ul className="space-y-3 text-sm text-gray-400">
-              <li className="flex items-center gap-2 hover:text-white transition">
-                <Mail className="w-4 h-4 text-red-500" />
-                info@redestampacion.com
-              </li>
-              <li className="flex items-center gap-2 hover:text-white transition">
-                <Phone className="w-4 h-4 text-red-500" />
-                +57 301 441 29 67
-              </li>
-              <li className="flex items-center gap-2 hover:text-white transition">
-                <MapPin className="w-4 h-4 text-red-500" />
-                {locale === 'es' ? 'Medellín, Colombia' : 'Medellín, Colombia'}
-              </li>
-            </ul>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              {t('footer.newsletterDesc')}
+            </p>
+            <NewsletterSignup variant="footer" />
           </motion.div>
-        </div>
+        </motion.div>
 
-        {/* Bottom */}
+        {/* Bottom Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="border-t border-gray-700 mt-8 pt-8 text-center"
+          transition={{ delay: 0.5 }}
+          className="mt-16 pt-8 border-t border-slate-800"
         >
-          <p className="text-sm text-gray-400 flex items-center justify-center gap-1">
-            &copy; {currentYear} Red Estampación.{' '}
-            {locale === 'es' ? 'Hecho con' : 'Made with'}{' '}
-            <Heart className="w-4 h-4 text-red-500 fill-current" />{' '}
-            {locale === 'es' ? 'en Medellin Colombia' : 'in Medellin Colombia'}.
-          </p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-slate-500 text-sm">
+              {t('footer.copyright', { year: currentYear })}
+            </p>
+            <div className="flex gap-6 text-sm text-slate-500">
+              <Link href="#" className="hover:text-white transition-colors">
+                {t('footer.privacy')}
+              </Link>
+              <Link href="#" className="hover:text-white transition-colors">
+                {t('footer.terms')}
+              </Link>
+            </div>
+          </div>
         </motion.div>
       </div>
     </footer>

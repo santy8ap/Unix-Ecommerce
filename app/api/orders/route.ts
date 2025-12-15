@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { items, shipping } = body
+    const { items, shipping, paymentMethod = 'bitcoin', transactionId } = body
 
     // Calcular total
     let total = 0
@@ -70,16 +70,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Add tax
+    const tax = total * 0.09
+    total = total + tax
+
     // Crear orden con items
     const order = await prisma.order.create({
       data: {
         userId: session.user.id,
         total,
+        paymentMethod,
+        transactionId,
+        paymentStatus: transactionId ? 'completed' : 'pending',
+        status: transactionId ? 'PAID' : 'PENDING',
         shippingName: shipping.name,
         shippingEmail: shipping.email,
         shippingAddress: shipping.address,
         shippingCity: shipping.city,
         shippingZip: shipping.zip,
+        shippingPhone: shipping.phone || null,
         items: {
           create: items.map((item: any) => ({
             productId: item.productId,
@@ -111,26 +120,27 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    // 📧 ENVIAR EMAIL DE CONFIRMACIÓN
-    try {
-      await sendOrderConfirmation({
-        orderId: order.id,
-        customerName: shipping.name,
-        customerEmail: shipping.email,
-        total: order.total,
-        items: order.items,
-        shippingAddress: {
-          address: shipping.address,
-          city: shipping.city,
-          zip: shipping.zip,
-          name: shipping.name,
-          email: shipping.email
-        }
-      })
-      console.log('✅ Email de confirmación enviado a:', shipping.email)
-    } catch (emailError) {
-      console.error('❌ Error enviando email:', emailError)
-      // No fallar la orden si el email falla
+    // 📧 ENVIAR EMAIL DE CONFIRMACIÓN (Solo si ya está pagada)
+    if (order.status === 'PAID') {
+      try {
+        await sendOrderConfirmation({
+          orderId: order.id,
+          customerName: shipping.name,
+          customerEmail: shipping.email,
+          total: order.total,
+          items: order.items,
+          shippingAddress: {
+            address: shipping.address,
+            city: shipping.city,
+            zip: shipping.zip,
+            name: shipping.name,
+            email: shipping.email
+          }
+        })
+        console.log('✅ Email de confirmación enviado a:', shipping.email)
+      } catch (emailError) {
+        console.error('❌ Error enviando email:', emailError)
+      }
     }
 
     return NextResponse.json(order, { status: 201 })

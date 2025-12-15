@@ -7,59 +7,391 @@
     "edit": "Edit",
     "search": "Search",
     "filter": "Filter",
-    "close": "Close"
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "select": "Select",
+    "clear": "Clear",
+    "apply": "Apply",
+    "reset": "Reset",
+    "view": "View",
+    "download": "Download",
+    "upload": "Upload"
   },
   "nav": {
     "home": "Home",
     "products": "Products",
-    "categories": "Categories",
+    "collections": "Collections",
     "cart": "Cart",
+    "wishlist": "Wishlist",
     "admin": "Admin",
     "signIn": "Sign In",
     "signOut": "Sign Out",
-    "myOrders": "My Orders"
+    "myOrders": "My Orders",
+    "profile": "Profile",
+    "settings": "Settings",
+    "help": "Help",
+    "faq": "FAQ"
   },
   "home": {
     "hero": {
-      "title": "Red Estampación",
-      "subtitle": "The best printed shirts with unique designs. Premium quality and incomparable style.",
-      "cta": "View Products"
+      "badge": "New Collection 2025",
+      "title": "UNIX AI Fashion",
+      "subtitle": "Fashion redefined by artificial intelligence.",
+      "description": "Experience the future of style with AI-generated designs and premium quality.",
+      "cta": "Explore Now",
+      "explore": "View Collections"
     },
-    "featured": "Featured Products",
-    "categories": "Categories",
-    "ctaTitle": "Ready to renew your style?",
-    "ctaSubtitle": "Explore our complete collection of shirts",
-    "ctaButton": "Explore Now"
+    "features": {
+      "shipping": {
+        "title": "Free Shipping",
+        "desc": "On orders over $50"
+      },
+      "secure": {
+        "title": "Secure Purchase",
+        "desc": "100% protected"
+      },
+      "price": {
+        "title": "Best Price",
+        "desc": "Guaranteed"
+      },
+      "quality": {
+        "title": "Premium Quality",
+        "desc": "Selected products"
+      }
+    },
+    "featured": {
+      "title": "Featured Collection",
+      "subtitle": "Discover our most exclusive designs",
+      "badge": "New",
+      "viewAll": "View all products"
+    }
   },
   "products": {
-    "title": "Our Products",
-    "noProducts": "No products available",
+    "title": "Our Collection",
+    "subtitle": "Discover unique garments designed to highlight your personal style with the best quality.",
+    "noProducts": "No products found",
+    "noProductsDesc": "Try adjusting your filters or search for something different. We have many options for you!",
     "viewMore": "View more",
     "featured": "Featured",
     "addToCart": "Add to Cart",
-    "outOfStock": "Out of Stock"
+    "outOfStock": "Out of Stock",
+    "lowStock": "Low Stock",
+    "inStock": "In Stock",
+    "viewDetails": "View Details",
+    "quickView": "Quick View",
+    "compare": "Compare",
+    "share": "Share",
+    "filters": {
+      "title": "Filters",
+      "clearAll": "Clear all",
+      "category": "Category",
+      "color": "Color",
+      "size": "Size",
+      "price": "Price",
+      "priceRange": "Price Range",
+      "sortBy": "Sort by",
+      "showing": "Showing {count} products",
+      "searchPlaceholder": "Search products..."
+    },
+    "sort": {
+      "newest": "✨ Newest",
+      "priceLow": "💰 Price: Low to High",
+      "priceHigh": "💎 Price: High to Low",
+      "popular": "🔥 Most Popular",
+      "rating": "⭐ Top Rated"
+    },
+    "categories": {
+      "all": "All",
+      "casual": "Casual",
+      "sports": "Sports",
+      "formal": "Formal",
+      "vintage": "Vintage",
+      "printed": "Printed"
+    },
+    "details": {
+      "description": "Description",
+      "specifications": "Specifications",
+      "reviews": "Reviews",
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "selectSize": "Select a size",
+      "selectColor": "Select a color",
+      "sizeGuide": "Size Guide",
+      "addToWishlist": "Add to Wishlist",
+      "removeFromWishlist": "Remove from Wishlist",
+      "similarProducts": "Similar Products",
+      "relatedProducts": "Related Products"
+    }
   },
   "cart": {
     "title": "Shopping Cart",
-    "empty": "Your cart is empty",
+    "empty": "Empty Cart",
+    "emptyDesc": "Your cart is empty. Start adding products and enjoy our premium garments!",
+    "items": "{count} item | {count} items",
     "subtotal": "Subtotal",
+    "tax": "Tax ({rate}%)",
+    "shipping": "Shipping",
+    "shippingFree": "Free",
+    "discount": "Discount",
     "total": "Total",
     "checkout": "Proceed to Checkout",
     "continueShopping": "Continue shopping",
+    "clearCart": "Clear Cart",
     "remove": "Remove",
-    "quantity": "Quantity"
+    "quantity": "Quantity",
+    "update": "Update",
+    "coupon": {
+      "title": "Discount Code",
+      "placeholder": "e.g: WELCOME10",
+      "apply": "Apply",
+      "applied": "Coupon: {code}",
+      "remove": "Remove",
+      "invalid": "Invalid or expired coupon code",
+      "success": "Coupon applied successfully"
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping": {
+      "title": "Shipping Information",
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone",
+      "address": "Address",
+      "city": "City",
+      "state": "State/Province",
+      "zip": "ZIP Code",
+      "country": "Country"
+    },
+    "payment": {
+      "title": "Payment Method",
+      "card": "Credit/Debit Card",
+      "paypal": "PayPal",
+      "cash": "Cash on Delivery"
+    },
+    "review": {
+      "title": "Review Order",
+      "orderSummary": "Order Summary"
+    },
+    "placeOrder": "Place Order",
+    "orderPlaced": "Order Confirmed!",
+    "orderNumber": "Order Number",
+    "thankYou": "Thank you for your purchase",
+    "emailSent": "We've sent you a confirmation email",
+    "viewOrder": "View Order",
+    "errors": {
+      "requiredName": "Name is required",
+      "requiredEmail": "Email is required",
+      "invalidEmail": "Invalid email",
+      "requiredAddress": "Address is required",
+      "requiredCity": "City is required",
+      "requiredZip": "ZIP code is required"
+    }
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Empty Wishlist",
+    "emptyDesc": "Add products to your wishlist and they will appear here. Start exploring our collections!",
+    "items": "{count} product | {count} products",
+    "totalValue": "Total value",
+    "addToCart": "Add to Cart",
+    "addAllToCart": "Add {count} to cart",
+    "removeAll": "Clear all",
+    "selectAll": "Select all",
+    "selected": "{count} selected",
+    "copyLink": "Copy Link",
+    "linkCopied": "Link copied",
+    "addedToCart": "Added to cart",
+    "removed": "Removed from wishlist"
+  },
+  "orders": {
+    "title": "My Orders",
+    "empty": "No orders yet",
+    "emptyDesc": "When you make a purchase, your orders will appear here",
+    "orderNumber": "Order #{number}",
+    "date": "Date",
+    "status": "Status",
+    "total": "Total",
+    "items": "Items",
+    "viewDetails": "View Details",
+    "trackOrder": "Track Order",
+    "downloadInvoice": "Download Invoice",
+    "statuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "refunded": "Refunded"
+    },
+    "details": {
+      "title": "Order Details",
+      "shippingInfo": "Shipping Information",
+      "paymentMethod": "Payment Method",
+      "orderSummary": "Order Summary",
+      "estimatedDelivery": "Estimated Delivery",
+      "trackingNumber": "Tracking Number"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Welcome",
+      "subtitle": "Sign in to access your account",
+      "withGoogle": "Continue with Google",
+      "secureAccess": "Secure access",
+      "protectedInfo": "Your information is protected with SSL encryption",
+      "googlePrivacy": "We use Google to ensure your privacy",
+      "terms": "By signing in, you agree to our",
+      "termsLink": "terms and conditions",
+      "firstTime": "First time here?",
+      "exploreProducts": "Explore our products"
+    },
+    "signOut": "Sign Out",
+    "myAccount": "My Account"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "welcome": "Welcome back",
+      "overview": "Overview",
+      "quickActions": "Quick Actions",
+      "stats": {
+        "totalSales": "Total Sales",
+        "totalOrders": "Total Orders",
+        "totalProducts": "Total Products",
+        "totalCustomers": "Total Customers",
+        "activeProducts": "Active Products",
+        "lowStock": "Low Stock",
+        "pendingOrders": "Pending Orders"
+      },
+      "actions": {
+        "addProduct": "Add Product",
+        "manageProducts": "Manage Products",
+        "viewOrders": "View Orders",
+        "viewCustomers": "View Customers",
+        "settings": "Settings"
+      }
+    },
+    "products": {
+      "title": "Product Management",
+      "addNew": "New Product",
+      "list": "Product List",
+      "edit": "Edit Product",
+      "delete": "Delete Product",
+      "confirmDelete": "Are you sure you want to delete this product?",
+      "deleted": "Product deleted",
+      "updated": "Product updated",
+      "created": "Product created",
+      "form": {
+        "name": "Product Name",
+        "description": "Description",
+        "price": "Price",
+        "stock": "Stock",
+        "category": "Category",
+        "images": "Images",
+        "sizes": "Available Sizes",
+        "colors": "Available Colors",
+        "featured": "Featured Product",
+        "active": "Active",
+        "uploadImages": "Upload Images",
+        "uploadingImages": "Uploading images...",
+        "imageUploaded": "Image uploaded successfully",
+        "imageError": "Error uploading image"
+      },
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive",
+        "lowStock": "Low Stock",
+        "outOfStock": "Out of Stock"
+      }
+    }
   },
   "notifications": {
     "success": {
-      "productAdded": "Product added to cart",
-      "productUpdated": "Product updated",
-      "productDeleted": "Product deleted",
-      "orderCreated": "Order created successfully"
+      "productAdded": "✅ Product added to cart",
+      "productUpdated": "✅ Product updated",
+      "productDeleted": "✅ Product deleted",
+      "orderCreated": "✅ Order created successfully",
+      "orderUpdated": "✅ Order updated",
+      "saved": "✅ Saved successfully",
+      "addedToWishlist": "✅ Added to wishlist",
+      "removedFromWishlist": "Removed from wishlist",
+      "cartCleared": "Cart cleared",
+      "copied": "✅ Copied to clipboard"
     },
     "error": {
-      "generic": "An error occurred",
-      "unauthorized": "Unauthorized",
-      "notFound": "Not found"
+      "generic": "❌ An error occurred",
+      "unauthorized": "❌ Unauthorized",
+      "notFound": "❌ Not found",
+      "invalidData": "❌ Invalid data",
+      "serverError": "❌ Server error",
+      "networkError": "❌ Network error",
+      "selectSizeColor": "Select size and color",
+      "outOfStock": "Product out of stock",
+      "addToCartFailed": "❌ Failed to add to cart"
+    },
+    "warning": {
+      "lowStock": "⚠️ Low stock available",
+      "sessionExpired": "⚠️ Session expired"
+    },
+    "info": {
+      "processing": "Processing...",
+      "loading": "Loading...",
+      "alreadyInWishlist": "Already in wishlist"
     }
+  },
+  "validation": {
+    "required": "This field is required",
+    "email": "Invalid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be at most {max} characters",
+    "min": "Must be at least {min}",
+    "max": "Must be at most {max}",
+    "positive": "Must be a positive number",
+    "integer": "Must be an integer",
+    "url": "Invalid URL",
+    "phone": "Invalid phone number"
+  },
+  "footer": {
+    "description": "UNIX elevates style with exclusive designs and premium quality. Every garment tells a unique story.",
+    "explore": "Explore",
+    "help": "Help",
+    "contact": "Contact",
+    "shipping": "Shipping",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Subscribe to receive exclusive offers from UNIX.",
+    "subscribe": "Subscribe",
+    "subscribed": "Thanks for subscribing!",
+    "copyright": "© {year} UNIX.",
+    "faq": "FAQ"
+  },
+  "newsletter": {
+    "title": "Join the Community",
+    "description": "Subscribe to receive exclusive access to new releases, special offers, and style inspiration.",
+    "placeholder": "Your email",
+    "subscribe": "Subscribe",
+    "subscribed": "Successfully subscribed!",
+    "error": "Subscription error"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to the most common questions"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Read more",
+    "by": "By",
+    "on": "on",
+    "comments": "comments",
+    "share": "Share"
   }
 }

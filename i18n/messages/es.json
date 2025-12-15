@@ -7,59 +7,391 @@
     "edit": "Editar",
     "search": "Buscar",
     "filter": "Filtrar",
-    "close": "Cerrar"
+    "close": "Cerrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "confirm": "Confirmar",
+    "yes": "Sí",
+    "no": "No",
+    "select": "Seleccionar",
+    "clear": "Limpiar",
+    "apply": "Aplicar",
+    "reset": "Restablecer",
+    "view": "Ver",
+    "download": "Descargar",
+    "upload": "Subir"
   },
   "nav": {
     "home": "Inicio",
     "products": "Productos",
-    "categories": "Categorías",
+    "collections": "Colecciones",
     "cart": "Carrito",
+    "wishlist": "Favoritos",
     "admin": "Admin",
     "signIn": "Iniciar Sesión",
     "signOut": "Cerrar Sesión",
-    "myOrders": "Mis Órdenes"
+    "myOrders": "Mis Órdenes",
+    "profile": "Perfil",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "faq": "Preguntas Frecuentes"
   },
   "home": {
     "hero": {
-      "title": "Red Estampación",
-      "subtitle": "Las mejores camisas estampadas con diseños únicos. Calidad premium y estilo incomparable.",
-      "cta": "Ver Productos"
+      "badge": "Nueva Colección 2025",
+      "title": "UNIX AI Fashion",
+      "subtitle": "Moda redefinida por inteligencia artificial.",
+      "description": "Experimenta el futuro del estilo con diseños generados por IA y calidad premium.",
+      "cta": "Explorar Ahora",
+      "explore": "Ver Colecciones"
     },
-    "featured": "Productos Destacados",
-    "categories": "Categorías",
-    "ctaTitle": "¿Listo para renovar tu estilo?",
-    "ctaSubtitle": "Explora nuestra colección completa de camisas",
-    "ctaButton": "Explorar Ahora"
+    "features": {
+      "shipping": {
+        "title": "Envío Gratis",
+        "desc": "En compras mayores a $50"
+      },
+      "secure": {
+        "title": "Compra Segura",
+        "desc": "100% protegido"
+      },
+      "price": {
+        "title": "Mejor Precio",
+        "desc": "Garantizado"
+      },
+      "quality": {
+        "title": "Calidad Premium",
+        "desc": "Productos seleccionados"
+      }
+    },
+    "featured": {
+      "title": "Colección Destacada",
+      "subtitle": "Descubre nuestros diseños más exclusivos",
+      "badge": "Nuevo",
+      "viewAll": "Ver todos los productos"
+    }
   },
   "products": {
-    "title": "Nuestros Productos",
-    "noProducts": "No hay productos disponibles",
+    "title": "Nuestra Colección",
+    "subtitle": "Descubre prendas únicas diseñadas para destacar tu estilo personal con la mejor calidad.",
+    "noProducts": "No se encontraron productos",
+    "noProductsDesc": "Intenta ajustar tus filtros o busca algo diferente. ¡Tenemos muchas opciones para ti!",
     "viewMore": "Ver más",
     "featured": "Destacado",
     "addToCart": "Agregar al Carrito",
-    "outOfStock": "Agotado"
+    "outOfStock": "Agotado",
+    "lowStock": "Pocas unidades",
+    "inStock": "En Stock",
+    "viewDetails": "Ver Detalles",
+    "quickView": "Vista Rápida",
+    "compare": "Comparar",
+    "share": "Compartir",
+    "filters": {
+      "title": "Filtros",
+      "clearAll": "Limpiar todo",
+      "category": "Categoría",
+      "color": "Color",
+      "size": "Talla",
+      "price": "Precio",
+      "priceRange": "Rango de Precio",
+      "sortBy": "Ordenar por",
+      "showing": "Mostrando {count} productos",
+      "searchPlaceholder": "Buscar productos..."
+    },
+    "sort": {
+      "newest": "✨ Más Nuevos",
+      "priceLow": "💰 Precio: Menor a Mayor",
+      "priceHigh": "💎 Precio: Mayor a Menor",
+      "popular": "🔥 Más Populares",
+      "rating": "⭐ Mejor Calificación"
+    },
+    "categories": {
+      "all": "Todas",
+      "casual": "Casual",
+      "sports": "Deportiva",
+      "formal": "Formal",
+      "vintage": "Vintage",
+      "printed": "Estampada"
+    },
+    "details": {
+      "description": "Descripción",
+      "specifications": "Especificaciones",
+      "reviews": "Reseñas",
+      "shipping": "Envío",
+      "returns": "Devoluciones",
+      "selectSize": "Selecciona una talla",
+      "selectColor": "Selecciona un color",
+      "sizeGuide": "Guía de Tallas",
+      "addToWishlist": "Agregar a Favoritos",
+      "removeFromWishlist": "Quitar de Favoritos",
+      "similarProducts": "Productos Similares",
+      "relatedProducts": "Productos Relacionados"
+    }
   },
   "cart": {
     "title": "Carrito de Compras",
-    "empty": "Tu carrito está vacío",
+    "empty": "Carrito Vacío",
+    "emptyDesc": "Tu carrito está vacío. ¡Comienza a agregar productos y disfruta de nuestras prendas premium!",
+    "items": "{count} artículo | {count} artículos",
     "subtotal": "Subtotal",
+    "tax": "Impuestos ({rate}%)",
+    "shipping": "Envío",
+    "shippingFree": "Gratis",
+    "discount": "Descuento",
     "total": "Total",
     "checkout": "Proceder al Pago",
     "continueShopping": "Continuar comprando",
+    "clearCart": "Vaciar Carrito",
     "remove": "Eliminar",
-    "quantity": "Cantidad"
+    "quantity": "Cantidad",
+    "update": "Actualizar",
+    "coupon": {
+      "title": "Código de Descuento",
+      "placeholder": "Ej: WELCOME10",
+      "apply": "Aplicar",
+      "applied": "Cupón: {code}",
+      "remove": "Remover",
+      "invalid": "Código de cupón inválido o expirado",
+      "success": "Cupón aplicado correctamente"
+    }
+  },
+  "checkout": {
+    "title": "Finalizar Compra",
+    "shipping": {
+      "title": "Información de Envío",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "phone": "Teléfono",
+      "address": "Dirección",
+      "city": "Ciudad",
+      "state": "Estado/Provincia",
+      "zip": "Código Postal",
+      "country": "País"
+    },
+    "payment": {
+      "title": "Método de Pago",
+      "card": "Tarjeta de Crédito/Débito",
+      "paypal": "PayPal",
+      "cash": "Pago Contra Entrega"
+    },
+    "review": {
+      "title": "Revisar Orden",
+      "orderSummary": "Resumen de la Orden"
+    },
+    "placeOrder": "Confirmar Pedido",
+    "orderPlaced": "¡Orden Confirmada!",
+    "orderNumber": "Número de Orden",
+    "thankYou": "Gracias por tu compra",
+    "emailSent": "Te hemos enviado un correo de confirmación",
+    "viewOrder": "Ver Orden",
+    "errors": {
+      "requiredName": "El nombre es requerido",
+      "requiredEmail": "El correo es requerido",
+      "invalidEmail": "Correo inválido",
+      "requiredAddress": "La dirección es requerida",
+      "requiredCity": "La ciudad es requerida",
+      "requiredZip": "El código postal es requerido"
+    }
+  },
+  "wishlist": {
+    "title": "Mis Favoritos",
+    "empty": "Wishlist Vacío",
+    "emptyDesc": "Agrega productos a favoritos y aparecerán aquí. ¡Comienza a explorar nuestras colecciones!",
+    "items": "{count} producto | {count} productos",
+    "totalValue": "Valor total",
+    "addToCart": "Agregar al Carrito",
+    "addAllToCart": "Agregar {count} al carrito",
+    "removeAll": "Limpiar todo",
+    "selectAll": "Seleccionar todo",
+    "selected": "{count} seleccionado | {count} seleccionados",
+    "copyLink": "Copiar Enlace",
+    "linkCopied": "Enlace copiado",
+    "addedToCart": "Agregado al carrito",
+    "removed": "Eliminado de favoritos"
+  },
+  "orders": {
+    "title": "Mis Órdenes",
+    "empty": "No tienes órdenes",
+    "emptyDesc": "Cuando realices una compra, tus órdenes aparecerán aquí",
+    "orderNumber": "Orden #{number}",
+    "date": "Fecha",
+    "status": "Estado",
+    "total": "Total",
+    "items": "Artículos",
+    "viewDetails": "Ver Detalles",
+    "trackOrder": "Rastrear Orden",
+    "downloadInvoice": "Descargar Factura",
+    "statuses": {
+      "pending": "Pendiente",
+      "processing": "Procesando",
+      "shipped": "Enviado",
+      "delivered": "Entregado",
+      "cancelled": "Cancelado",
+      "refunded": "Reembolsado"
+    },
+    "details": {
+      "title": "Detalles de la Orden",
+      "shippingInfo": "Información de Envío",
+      "paymentMethod": "Método de Pago",
+      "orderSummary": "Resumen de la Orden",
+      "estimatedDelivery": "Entrega Estimada",
+      "trackingNumber": "Número de Rastreo"
+    }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Bienvenido",
+      "subtitle": "Inicia sesión para acceder a tu cuenta",
+      "withGoogle": "Continuar con Google",
+      "secureAccess": "Acceso seguro",
+      "protectedInfo": "Tu información está protegida con encriptación SSL",
+      "googlePrivacy": "Usamos Google para garantizar tu privacidad",
+      "terms": "Al iniciar sesión, aceptas nuestros",
+      "termsLink": "términos y condiciones",
+      "firstTime": "¿Primera vez aquí?",
+      "exploreProducts": "Explora nuestros productos"
+    },
+    "signOut": "Cerrar Sesión",
+    "myAccount": "Mi Cuenta"
+  },
+  "admin": {
+    "dashboard": {
+      "title": "Panel de Administración",
+      "welcome": "Bienvenido de vuelta",
+      "overview": "Resumen General",
+      "quickActions": "Acciones Rápidas",
+      "stats": {
+        "totalSales": "Ventas Totales",
+        "totalOrders": "Órdenes Totales",
+        "totalProducts": "Productos Totales",
+        "totalCustomers": "Clientes Totales",
+        "activeProducts": "Productos Activos",
+        "lowStock": "Stock Bajo",
+        "pendingOrders": "Órdenes Pendientes"
+      },
+      "actions": {
+        "addProduct": "Agregar Producto",
+        "manageProducts": "Gestionar Productos",
+        "viewOrders": "Ver Órdenes",
+        "viewCustomers": "Ver Clientes",
+        "settings": "Configuración"
+      }
+    },
+    "products": {
+      "title": "Gestión de Productos",
+      "addNew": "Nuevo Producto",
+      "list": "Lista de Productos",
+      "edit": "Editar Producto",
+      "delete": "Eliminar Producto",
+      "confirmDelete": "¿Estás seguro de eliminar este producto?",
+      "deleted": "Producto eliminado",
+      "updated": "Producto actualizado",
+      "created": "Producto creado",
+      "form": {
+        "name": "Nombre del Producto",
+        "description": "Descripción",
+        "price": "Precio",
+        "stock": "Stock",
+        "category": "Categoría",
+        "images": "Imágenes",
+        "sizes": "Tallas Disponibles",
+        "colors": "Colores Disponibles",
+        "featured": "Producto Destacado",
+        "active": "Activo",
+        "uploadImages": "Subir Imágenes",
+        "uploadingImages": "Subiendo imágenes...",
+        "imageUploaded": "Imagen subida correctamente",
+        "imageError": "Error al subir imagen"
+      },
+      "filters": {
+        "all": "Todos",
+        "active": "Activos",
+        "inactive": "Inactivos",
+        "lowStock": "Stock Bajo",
+        "outOfStock": "Sin Stock"
+      }
+    }
   },
   "notifications": {
     "success": {
-      "productAdded": "Producto agregado al carrito",
-      "productUpdated": "Producto actualizado",
-      "productDeleted": "Producto eliminado",
-      "orderCreated": "Orden creada exitosamente"
+      "productAdded": "✅ Producto agregado al carrito",
+      "productUpdated": "✅ Producto actualizado",
+      "productDeleted": "✅ Producto eliminado",
+      "orderCreated": "✅ Orden creada exitosamente",
+      "orderUpdated": "✅ Orden actualizada",
+      "saved": "✅ Guardado exitosamente",
+      "addedToWishlist": "✅ Agregado a favoritos",
+      "removedFromWishlist": "Eliminado de favoritos",
+      "cartCleared": "Carrito vaciado",
+      "copied": "✅ Copiado al portapapeles"
     },
     "error": {
-      "generic": "Ocurrió un error",
-      "unauthorized": "No autorizado",
-      "notFound": "No encontrado"
+      "generic": "❌ Ocurrió un error",
+      "unauthorized": "❌ No autorizado",
+      "notFound": "❌ No encontrado",
+      "invalidData": "❌ Datos inválidos",
+      "serverError": "❌ Error del servidor",
+      "networkError": "❌ Error de conexión",
+      "selectSizeColor": "Selecciona talla y color",
+      "outOfStock": "Producto agotado",
+      "addToCartFailed": "❌ Error al agregar al carrito"
+    },
+    "warning": {
+      "lowStock": "⚠️ Pocas unidades disponibles",
+      "sessionExpired": "⚠️ Sesión expirada"
+    },
+    "info": {
+      "processing": "Procesando...",
+      "loading": "Cargando...",
+      "alreadyInWishlist": "Ya está en favoritos"
     }
+  },
+  "validation": {
+    "required": "Este campo es requerido",
+    "email": "Correo electrónico inválido",
+    "minLength": "Debe tener al menos {min} caracteres",
+    "maxLength": "Debe tener máximo {max} caracteres",
+    "min": "Debe ser al menos {min}",
+    "max": "Debe ser máximo {max}",
+    "positive": "Debe ser un número positivo",
+    "integer": "Debe ser un número entero",
+    "url": "URL inválida",
+    "phone": "Número de teléfono inválido"
+  },
+  "footer": {
+    "description": "UNIX redefine la moda combinando estilo exclusivo con el poder de la inteligencia artificial.",
+    "explore": "Explorar",
+    "help": "Ayuda",
+    "contact": "Contacto",
+    "shipping": "Envíos",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "newsletter": "Newsletter",
+    "newsletterDesc": "Suscríbete para recibir ofertas exclusivas de UNIX.",
+    "subscribe": "Suscribirse",
+    "subscribed": "¡Gracias por suscribirte!",
+    "copyright": "© {year} UNIX.",
+    "faq": "Preguntas Frecuentes"
+  },
+  "newsletter": {
+    "title": "Únete a la Comunidad",
+    "description": "Suscríbete para recibir acceso exclusivo a nuevos lanzamientos, ofertas especiales e inspiración de estilo.",
+    "placeholder": "Tu correo electrónico",
+    "subscribe": "Suscribirse",
+    "subscribed": "¡Suscrito exitosamente!",
+    "error": "Error al suscribirse"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "subtitle": "Encuentra respuestas a las preguntas más comunes"
+  },
+  "blog": {
+    "title": "Blog",
+    "readMore": "Leer más",
+    "by": "Por",
+    "on": "el",
+    "comments": "comentarios",
+    "share": "Compartir"
   }
 }

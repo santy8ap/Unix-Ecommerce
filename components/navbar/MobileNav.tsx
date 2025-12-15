@@ -56,41 +56,31 @@ export default function MobileNav({
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="md:hidden border-t border-gray-700 overflow-hidden"
+                    className="md:hidden border-t border-slate-200 overflow-hidden bg-white"
                 >
                     <div className="py-4 space-y-3 px-4">
                         {/* User info mobile */}
                         {session && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                className="px-4 py-3 bg-gradient-to-r from-red-500/10 to-pink-500/10 rounded-lg border border-red-500/20 flex items-center gap-3"
-                            >
+                            <div className="px-4 py-3 bg-slate-50 rounded-lg border border-slate-100 flex items-center gap-3">
                                 {getUserImage() ? (
-                                    <motion.img
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
+                                    <img
                                         src={getUserImage() || ''}
                                         alt={session.user.name || 'User'}
-                                        className="w-12 h-12 rounded-full border-2 border-red-500 object-cover"
+                                        className="w-12 h-12 rounded-full border-2 border-primary object-cover"
                                         crossOrigin="anonymous"
                                     />
                                 ) : (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-lg"
-                                    >
+                                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold text-lg">
                                         {session.user.name?.charAt(0).toUpperCase() || 'U'}
-                                    </motion.div>
+                                    </div>
                                 )}
                                 <div>
-                                    <p className="text-sm font-semibold text-white">
+                                    <p className="text-sm font-semibold text-slate-900">
                                         {session.user.name || 'Usuario'}
                                     </p>
-                                    <p className="text-xs text-gray-300">{session.user.email}</p>
+                                    <p className="text-xs text-slate-500">{session.user.email}</p>
                                 </div>
-                            </motion.div>
+                            </div>
                         )}
 
                         {/* Navigation links */}
@@ -98,123 +88,87 @@ export default function MobileNav({
                             {navLinks.map((link, idx) => {
                                 const active = isActive(link.href)
                                 return (
-                                    <motion.div
+                                    <Link
                                         key={link.href}
-                                        initial={{ opacity: 0, x: -20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: idx * 0.05 }}
+                                        href={link.href}
+                                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active
+                                            ? 'bg-primary/10 text-primary border border-primary/20'
+                                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                            }`}
+                                        onClick={() => setShowMobileMenu(false)}
                                     >
-                                        <Link
-                                            href={link.href}
-                                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${active
-                                                    ? 'bg-red-500/20 border border-red-500/50 text-red-400'
-                                                    : 'hover:bg-white/5 text-white/80 hover:text-white'
-                                                }`}
-                                            onClick={() => setShowMobileMenu(false)}
-                                        >
-                                            <link.icon className="w-5 h-5" />
-                                            <span className="font-medium">{link.label}</span>
-                                        </Link>
-                                    </motion.div>
+                                        <link.icon className="w-5 h-5" />
+                                        <span className="font-medium">{link.label}</span>
+                                    </Link>
                                 )
                             })}
                         </div>
 
                         {/* My Orders */}
                         {session && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.15 }}
+                            <Link
+                                href="/mis-ordenes"
+                                className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 rounded-lg transition text-slate-600 hover:text-slate-900"
+                                onClick={() => setShowMobileMenu(false)}
                             >
-                                <Link
-                                    href="/mis-ordenes"
-                                    className="flex items-center gap-3 px-4 py-3 hover:bg-white/5 rounded-lg transition text-white/80 hover:text-white"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    <Package className="w-5 h-5 text-red-400" />
-                                    <span className="font-medium">{t('nav.myOrders')}</span>
-                                </Link>
-                            </motion.div>
+                                <Package className="w-5 h-5 text-primary" />
+                                <span className="font-medium">{t('nav.myOrders')}</span>
+                            </Link>
                         )}
 
                         {/* Admin Panel */}
                         {session?.user?.role === 'ADMIN' && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.2 }}
+                            <Link
+                                href="/admin"
+                                className="flex items-center gap-3 px-4 py-3 bg-primary hover:bg-primary/90 rounded-lg transition font-medium text-white shadow-sm"
+                                onClick={() => setShowMobileMenu(false)}
                             >
-                                <Link
-                                    href="/admin"
-                                    className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-lg transition font-medium text-white shadow-lg"
-                                    onClick={() => setShowMobileMenu(false)}
-                                >
-                                    <Settings className="w-5 h-5" />
-                                    <span>{locale === 'es' ? 'Panel Admin' : 'Admin Panel'}</span>
-                                </Link>
-                            </motion.div>
+                                <Settings className="w-5 h-5" />
+                                <span>{locale === 'es' ? 'Panel Admin' : 'Admin Panel'}</span>
+                            </Link>
                         )}
 
                         {/* Language toggle mobile */}
                         {langLoaded && (
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.25 }}
+                            <button
+                                onClick={() => {
+                                    toggleLocale()
+                                    setShowMobileMenu(false)
+                                }}
+                                className="flex items-center gap-3 w-full px-4 py-3 hover:bg-slate-50 rounded-lg transition text-slate-600 hover:text-slate-900"
                             >
-                                <motion.button
-                                    whileHover={{ scale: 1.01 }}
-                                    whileTap={{ scale: 0.99 }}
-                                    onClick={() => {
-                                        toggleLocale()
-                                        setShowMobileMenu(false)
-                                    }}
-                                    className="flex items-center gap-3 w-full px-4 py-3 hover:bg-white/5 rounded-lg transition text-white/80 hover:text-white"
-                                >
-                                    <Globe className="w-5 h-5 text-red-400" />
-                                    <span className="font-medium">
-                                        {locale === 'es' ? 'English' : 'Español'}
-                                    </span>
-                                </motion.button>
-                            </motion.div>
+                                <Globe className="w-5 h-5 text-primary" />
+                                <span className="font-medium">
+                                    {locale === 'es' ? 'English' : 'Español'}
+                                </span>
+                            </button>
                         )}
 
                         {/* Auth button mobile */}
-                        <div className="pt-2 border-t border-gray-700">
-                            <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3 }}
-                            >
-                                {session ? (
-                                    <motion.button
-                                        whileHover={{ scale: 1.01 }}
-                                        whileTap={{ scale: 0.99 }}
-                                        onClick={() => {
-                                            setShowMobileMenu(false)
-                                            signOut({ callbackUrl: '/' })
-                                        }}
-                                        className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition font-medium"
-                                    >
-                                        <LogOut className="w-5 h-5" />
-                                        <span>{t('nav.signOut')}</span>
-                                    </motion.button>
-                                ) : (
-                                    <motion.button
-                                        whileHover={{ scale: 1.01 }}
-                                        whileTap={{ scale: 0.99 }}
-                                        onClick={() => {
-                                            setShowMobileMenu(false)
-                                            signIn('google', { callbackUrl: '/' })
-                                        }}
-                                        className="flex items-center gap-3 w-full px-4 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg transition font-semibold"
-                                    >
-                                        <User className="w-5 h-5" />
-                                        <span>{t('nav.signIn')}</span>
-                                    </motion.button>
-                                )}
-                            </motion.div>
+                        <div className="pt-2 border-t border-slate-200">
+                            {session ? (
+                                <button
+                                    onClick={() => {
+                                        setShowMobileMenu(false)
+                                        signOut({ callbackUrl: '/' })
+                                    }}
+                                    className="flex items-center gap-3 w-full px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition font-medium"
+                                >
+                                    <LogOut className="w-5 h-5" />
+                                    <span>{t('nav.signOut')}</span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={() => {
+                                        setShowMobileMenu(false)
+                                        signIn('google', { callbackUrl: '/' })
+                                    }}
+                                    className="flex items-center gap-3 w-full px-4 py-3 bg-slate-900 text-white hover:bg-slate-800 rounded-lg transition font-semibold"
+                                >
+                                    <User className="w-5 h-5" />
+                                    <span>{t('nav.signIn')}</span>
+                                </button>
+                            )}
                         </div>
                     </div>
                 </motion.div>

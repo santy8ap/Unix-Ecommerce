@@ -17,13 +17,7 @@ export default function UserMenu({ session, locale, t }: UserMenuProps) {
     const menuRef = useRef<HTMLDivElement>(null)
 
     const getUserImage = () => {
-        if (session?.user?.image) {
-            if (session.user.image.includes('googleusercontent')) {
-                return session.user.image
-            }
-            return session.user.image
-        }
-        return null
+        return session?.user?.image || null
     }
 
     useEffect(() => {
@@ -54,10 +48,9 @@ export default function UserMenu({ session, locale, t }: UserMenuProps) {
                         src={getUserImage() || ''}
                         alt={session.user.name || 'User'}
                         className="w-9 h-9 rounded-full border-2 border-red-500 ring-2 ring-red-500/20 object-cover group-hover:ring-red-500/40 transition"
-                        crossOrigin="anonymous"
                     />
                 ) : (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         className="w-9 h-9 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold ring-2 ring-red-500/20 group-hover:ring-red-500/40 transition shadow-md"
@@ -116,10 +109,9 @@ export default function UserMenu({ session, locale, t }: UserMenuProps) {
                                             src={getUserImage() || ''}
                                             alt={session.user.name || 'User'}
                                             className="w-12 h-12 rounded-full border-2 border-red-500 object-cover"
-                                            crossOrigin="anonymous"
                                         />
                                     ) : (
-                                        <motion.div 
+                                        <motion.div
                                             initial={{ opacity: 0, scale: 0.8 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white font-bold text-lg shadow-md"

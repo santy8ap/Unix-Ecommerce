@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {
+const nextConfig: NextConfig & { eslint?: { ignoreDuringBuilds: boolean } } = {
   images: {
     remotePatterns: [
       {
@@ -34,6 +34,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  // ESLint enabled during builds to catch errors before production
+  eslint: {
+    ignoreDuringBuilds: false,
   },
 }
 

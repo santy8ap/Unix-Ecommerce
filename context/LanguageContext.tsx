@@ -1,143 +1,21 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import esTranslations from '@/i18n/messages/es.json'
+import enTranslations from '@/i18n/messages/en.json'
 
 type Locale = 'es' | 'en'
 
 type LanguageContextType = {
     locale: Locale
     setLocale: (locale: Locale) => void
-    t: (key: string) => string
+    t: (key: string, params?: Record<string, string | number>) => string
     isLoaded: boolean
 }
 
 const translations = {
-    es: {
-        nav: {
-            home: 'Inicio',
-            products: 'Productos',
-            collections: 'Colecciones',
-            cart: 'Carrito',
-            admin: 'Admin',
-            signIn: 'Iniciar Sesión',
-            myOrders: 'Mis Órdenes',
-            signOut: 'Cerrar Sesión'
-        },
-        home: {
-            hero: {
-                badge: 'Nueva Colección 2024',
-                title: 'Red Estampación',
-                subtitle: 'Las mejores camisas estampadas con diseños únicos.',
-                description: 'Calidad premium y estilo incomparable.',
-                cta: 'Ver Productos',
-                explore: 'Explorar Categorías'
-            },
-            features: {
-                shipping: {
-                    title: 'Envío Gratis',
-                    desc: 'En compras mayores a $50'
-                },
-                secure: {
-                    title: 'Compra Segura',
-                    desc: '100% protegido'
-                },
-                price: {
-                    title: 'Mejor Precio',
-                    desc: 'Garantizado'
-                },
-                quality: {
-                    title: 'Calidad Premium',
-                    desc: 'Productos seleccionados'
-                }
-            },
-            featured: {
-                title: 'Productos Destacados',
-                subtitle: 'Descubre nuestra selección exclusiva de camisas más populares'
-            },
-            categories: {
-                title: 'Categorías',
-                subtitle: 'Encuentra el estilo perfecto para ti'
-            },
-            cta: {
-                title: '¿Listo para renovar tu estilo?',
-                subtitle: 'Explora nuestra colección completa de camisas premium',
-                button: 'Explorar Ahora'
-            }
-        },
-        products: {
-            featured: 'Destacado',
-            lastUnits: 'Últimas',
-            viewDetails: 'Ver Detalles',
-            addToCart: 'Agregar al Carrito'
-        },
-        common: {
-            loading: 'Cargando...',
-            noProducts: 'No hay productos disponibles'
-        }
-    },
-    en: {
-        nav: {
-            home: 'Home',
-            products: 'Products',
-            collections: 'Collections',
-            cart: 'Cart',
-            admin: 'Admin',
-            signIn: 'Sign In',
-            myOrders: 'My Orders',
-            signOut: 'Sign Out'
-        },
-        home: {
-            hero: {
-                badge: 'New Collection 2024',
-                title: 'Red Estampación',
-                subtitle: 'The best printed shirts with unique designs.',
-                description: 'Premium quality and incomparable style.',
-                cta: 'View Products',
-                explore: 'Explore Categories'
-            },
-            features: {
-                shipping: {
-                    title: 'Free Shipping',
-                    desc: 'On orders over $50'
-                },
-                secure: {
-                    title: 'Secure Purchase',
-                    desc: '100% protected'
-                },
-                price: {
-                    title: 'Best Price',
-                    desc: 'Guaranteed'
-                },
-                quality: {
-                    title: 'Premium Quality',
-                    desc: 'Selected products'
-                }
-            },
-            featured: {
-                title: 'Featured Products',
-                subtitle: 'Discover our exclusive selection of most popular shirts'
-            },
-            categories: {
-                title: 'Categories',
-                subtitle: 'Find the perfect style for you'
-            },
-            cta: {
-                title: 'Ready to renew your style?',
-                subtitle: 'Explore our complete collection of premium shirts',
-                button: 'Explore Now'
-            }
-        },
-        products: {
-            featured: 'Featured',
-            lastUnits: 'Last',
-            viewDetails: 'View Details',
-            addToCart: 'Add to Cart'
-        },
-        common: {
-            loading: 'Loading...',
-            noProducts: 'No products available'
-        }
-    }
+    es: esTranslations,
+    en: enTranslations
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -167,12 +45,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
         setLocaleState(newLocale)
         try {
             localStorage.setItem('locale', newLocale)
+            // Update HTML lang attribute
+            document.documentElement.lang = newLocale
         } catch (error) {
             console.error('Error saving locale:', error)
         }
     }
 
-    const t = (key: string): string => {
+    const t = (key: string, params?: Record<string, string | number>): string => {
         const keys = key.split('.')
         let value: any = translations[locale]
 
@@ -180,7 +60,20 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
             value = value?.[k]
         }
 
-        return value || key
+        // If translation not found, return the key
+        if (typeof value !== 'string') {
+            console.warn(`Translation not found for key: ${key}`)
+            return key
+        }
+
+        // Replace parameters if provided
+        if (params) {
+            return Object.entries(params).reduce((str, [paramKey, paramValue]) => {
+                return str.replace(new RegExp(`{${paramKey}}`, 'g'), String(paramValue))
+            }, value)
+        }
+
+        return value
     }
 
     return (

@@ -7,42 +7,38 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import {
-    Package,
-    TrendingUp,
-    DollarSign,
-    Star,
-    Search,
-    Filter,
-    Edit,
-    Trash2,
-    Plus,
-    Eye,
-    EyeOff,
-    ChevronDown,
-    CheckCircle,
-    AlertCircle,
-    ArrowUpDown,
-    Home,
-    ExternalLink
+    Package, TrendingUp, DollarSign, Star, Search, Filter, Edit, Trash2, Plus,
+    Eye, EyeOff, CheckCircle, AlertCircle, ArrowUpDown, Home, ExternalLink,
+    ShoppingBag, Truck, CreditCard, Calendar, User, Shield
 } from 'lucide-react'
 import Loading from '@/components/Loading'
 
 type SortField = 'name' | 'price' | 'stock' | 'active'
 type SortOrder = 'asc' | 'desc'
+type Tab = 'products' | 'orders'
 
 export default function AdminDashboard() {
     const { data: session, status } = useSession()
     const router = useRouter()
+    const [activeTab, setActiveTab] = useState<Tab>('products')
+
+    // Data states
     const [products, setProducts] = useState<any[]>([])
-    const [filteredProducts, setFilteredProducts] = useState<any[]>([])
+    const [orders, setOrders] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
+
+    // Filter states
+    const [filteredProducts, setFilteredProducts] = useState<any[]>([])
     const [searchTerm, setSearchTerm] = useState('')
     const [filterCategory, setFilterCategory] = useState('Todas')
     const [filterStatus, setFilterStatus] = useState('Todos')
     const [sortField, setSortField] = useState<SortField>('name')
     const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
-    const [deleteConfirm, setDeleteConfirm] = useState<{ id: string; name: string } | null>(null)
-    const [orders, setOrders] = useState<any[]>([])
+
+    // UI States
+    const [deleteProductConfirm, setDeleteProductConfirm] = useState<{ id: string; name: string } | null>(null)
+    const [updateOrderModal, setUpdateOrderModal] = useState<any | null>(null)
+
     const [stats, setStats] = useState({
         totalProducts: 0,
         activeProducts: 0,
@@ -52,16 +48,14 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         if (status === 'unauthenticated') {
-            router.push('/auth/signin')
+            router.push('/auth/signin?callbackUrl=/admin')
             return
         }
-
         if (status === 'authenticated' && session?.user?.role !== 'ADMIN') {
-            toast.error('No tienes permisos de administrador')
+            toast.error('Acceso denegado: Se requieren permisos de administrador')
             router.push('/')
             return
         }
-
         if (status === 'authenticated' && session?.user?.role === 'ADMIN') {
             fetchData()
         }
@@ -89,7 +83,9 @@ export default function AdminDashboard() {
             setOrders(ordersArray)
 
             // Calculate stats
-            const totalRevenue = ordersArray.reduce((sum: number, order: any) => sum + order.total, 0)
+            const totalRevenue = ordersArray
+                .filter((o: any) => o.paymentStatus === 'completed' || o.paymentMethod === 'bitcoin')
+                .reduce((sum: number, order: any) => sum + order.total, 0)
 
             setStats({
                 totalProducts: productsArray.length,
@@ -108,556 +104,452 @@ export default function AdminDashboard() {
 
     const filterProducts = () => {
         let filtered = [...products]
-
-        // Search filter
         if (searchTerm) {
             filtered = filtered.filter(p =>
                 p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                p.description?.toLowerCase().includes(searchTerm.toLowerCase())
+                p.category.toLowerCase().includes(searchTerm.toLowerCase())
             )
         }
+        if (filterCategory !== 'Todas') filtered = filtered.filter(p => p.category === filterCategory)
 
-        // Category filter
-        if (filterCategory !== 'Todas') {
-            filtered = filtered.filter(p => p.category === filterCategory)
-        }
+        if (filterStatus === 'Activos') filtered = filtered.filter(p => p.active)
+        else if (filterStatus === 'Inactivos') filtered = filtered.filter(p => !p.active)
+        else if (filterStatus === 'Destacados') filtered = filtered.filter(p => p.featured)
+        else if (filterStatus === 'Sin Stock') filtered = filtered.filter(p => p.stock === 0)
 
-        // Status filter
-        if (filterStatus === 'Activos') {
-            filtered = filtered.filter(p => p.active)
-        } else if (filterStatus === 'Inactivos') {
-            filtered = filtered.filter(p => !p.active)
-        } else if (filterStatus === 'Destacados') {
-            filtered = filtered.filter(p => p.featured)
-        } else if (filterStatus === 'Sin Stock') {
-            filtered = filtered.filter(p => p.stock === 0)
-        }
-
-        // Sorting
         filtered.sort((a, b) => {
             let aVal = a[sortField]
             let bVal = b[sortField]
-
-            if (typeof aVal === 'string') {
-                aVal = aVal.toLowerCase()
-                bVal = bVal.toLowerCase()
-            }
-
-            if (sortOrder === 'asc') {
-                return aVal > bVal ? 1 : -1
-            } else {
-                return aVal < bVal ? 1 : -1
-            }
+            if (typeof aVal === 'string') { aVal = aVal.toLowerCase(); bVal = bVal.toLowerCase() }
+            if (sortOrder === 'asc') return aVal > bVal ? 1 : -1
+            else return aVal < bVal ? 1 : -1
         })
-
         setFilteredProducts(filtered)
     }
 
-    const handleDelete = async (id: string) => {
-        const loadingToast = toast.loading('Eliminando producto...')
-
+    // --- Product Actions ---
+    const handleDeleteProduct = async (id: string) => {
         try {
-            const response = await fetch(`/api/products/${id}`, {
-                method: 'DELETE',
-            })
-
-            if (!response.ok) throw new Error('Error al eliminar')
-
-            toast.success('Producto eliminado exitosamente', { id: loadingToast })
-            setDeleteConfirm(null)
+            const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
+            if (!res.ok) throw new Error('Error')
+            toast.success('Producto eliminado')
+            setDeleteProductConfirm(null)
             fetchData()
         } catch (error) {
-            console.error('Error:', error)
-            toast.error('Error al eliminar producto', { id: loadingToast })
+            toast.error('Error al eliminar producto')
         }
     }
 
-    const toggleActive = async (id: string, currentStatus: boolean) => {
-        const loadingToast = toast.loading('Actualizando estado...')
-
+    const toggleProductActive = async (id: string, current: boolean) => {
         try {
-            const response = await fetch(`/api/products/${id}`, {
+            await fetch(`/api/products/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ active: !currentStatus })
+                body: JSON.stringify({ active: !current })
             })
-
-            if (!response.ok) throw new Error('Error al actualizar')
-
-            toast.success(
-                currentStatus ? 'Producto desactivado' : 'Producto activado',
-                { id: loadingToast }
-            )
+            toast.success(current ? 'Producto desactivado' : 'Producto activado')
             fetchData()
-        } catch (error) {
-            console.error('Error:', error)
-            toast.error('Error al actualizar estado', { id: loadingToast })
-        }
+        } catch (error) { toast.error('Error al actualizar') }
     }
 
-    const toggleFeatured = async (id: string, currentStatus: boolean) => {
-        const loadingToast = toast.loading('Actualizando destacado...')
-
+    const toggleProductFeatured = async (id: string, current: boolean) => {
         try {
-            const response = await fetch(`/api/products/${id}`, {
+            await fetch(`/api/products/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ featured: !currentStatus })
+                body: JSON.stringify({ featured: !current })
             })
-
-            if (!response.ok) throw new Error('Error al actualizar')
-
-            toast.success(
-                currentStatus ? 'Producto removido de destacados' : 'Producto marcado como destacado',
-                { id: loadingToast }
-            )
+            toast.success(current ? 'Removido de destacados' : 'Añadido a destacados')
             fetchData()
-        } catch (error) {
-            console.error('Error:', error)
-            toast.error('Error al actualizar destacado', { id: loadingToast })
-        }
+        } catch (error) { toast.error('Error al actualizar') }
     }
 
-    if (loading) {
-        return <Loading />
+    // --- Order Actions ---
+    const handleUpdateOrderStatus = async (id: string, newStatus: string) => {
+        try {
+            await fetch(`/api/orders/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            })
+            toast.success(`Orden actualizada a ${newStatus}`)
+            setUpdateOrderModal(null)
+            fetchData()
+        } catch (error) { toast.error('Error al actualizar orden') }
     }
+
+    if (loading) return <Loading />
 
     const categories = ['Todas', ...new Set(products.map((p: any) => p.category))]
 
-    const statsCards = [
-        {
-            icon: DollarSign,
-            label: 'Ingresos Totales',
-            value: `$${stats.totalRevenue.toLocaleString()}`,
-            color: 'from-green-500 to-green-600',
-            iconBg: 'bg-green-100',
-            iconColor: 'text-green-600'
-        },
-        {
-            icon: Package,
-            label: 'Total Pedidos',
-            value: stats.totalOrders,
-            color: 'from-blue-500 to-blue-600',
-            iconBg: 'bg-blue-100',
-            iconColor: 'text-blue-600'
-        },
-        {
-            icon: Star,
-            label: 'Productos Activos',
-            value: stats.activeProducts,
-            color: 'from-yellow-500 to-yellow-600',
-            iconBg: 'bg-yellow-100',
-            iconColor: 'text-yellow-600'
-        },
-        {
-            icon: TrendingUp,
-            label: 'Total Productos',
-            value: stats.totalProducts,
-            color: 'from-purple-500 to-purple-600',
-            iconBg: 'bg-purple-100',
-            iconColor: 'text-purple-600'
-        },
-    ]
-
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="min-h-screen bg-slate-950">
+            {/* Background Effects */}
+            <div className="fixed inset-0 pointer-events-none">
+                <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] animate-blob" />
+                <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] animate-blob animation-delay-2000" />
+            </div>
+
+            <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4"
-                >
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4 pt-20">
                     <div>
-                        <h1 className="text-4xl font-black text-gray-900 mb-2">
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm font-bold mb-4">
+                            <Shield className="w-4 h-4" />
                             Panel de Administración
-                        </h1>
-                        <p className="text-gray-600">
-                            Gestiona tus productos y órdenes • {filteredProducts.length} productos mostrados
-                        </p>
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-black text-white mb-2">Dashboard</h1>
+                        <p className="text-slate-400">Bienvenido de nuevo, {session?.user?.name}</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <Link href="/">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-white border-2 border-gray-300 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold flex items-center gap-2 shadow-md"
+                                className="px-5 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white hover:bg-slate-700 font-bold transition flex items-center gap-2"
                             >
-                                <Home className="w-5 h-5" />
-                                Inicio
+                                <Home className="w-4 h-4" /> Ir a Tienda
                             </motion.button>
                         </Link>
                         <Link href="/admin/productos/nuevo">
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 font-semibold flex items-center gap-2 shadow-lg hover:shadow-red-500/50"
+                                className="px-5 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-500 hover:to-purple-500 font-bold transition flex items-center gap-2 shadow-lg shadow-ind igo-500/30"
                             >
-                                <Plus className="w-5 h-5" />
-                                Nuevo Producto
+                                <Plus className="w-4 h-4" /> Nuevo Producto
                             </motion.button>
                         </Link>
                     </div>
-                </motion.div>
+                </div>
 
-                {/* Enhanced Statistics Cards */}
-                <motion.div
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
-                    {statsCards.map((stat, index) => (
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                    <StatCard icon={DollarSign} label="Ingresos" value={`$${stats.totalRevenue.toLocaleString()}`} color="green" />
+                    <StatCard icon={ShoppingBag} label="Órdenes" value={stats.totalOrders} color="blue" />
+                    <StatCard icon={Package} label="Productos" value={stats.totalProducts} color="purple" />
+                    <StatCard icon={Star} label="Activos" value={stats.activeProducts} color="yellow" />
+                </div>
+
+                {/* Tabs */}
+                <div className="flex gap-4 border-b border-slate-800 mb-8">
+                    <TabButton active={activeTab === 'products'} onClick={() => setActiveTab('products')} label="Productos" icon={Package} />
+                    <TabButton active={activeTab === 'orders'} onClick={() => setActiveTab('orders')} label="Órdenes" icon={ShoppingBag} />
+                </div>
+
+                {/* CONTENT */}
+                <AnimatePresence mode="wait">
+                    {activeTab === 'products' ? (
                         <motion.div
-                            key={stat.label}
-                            initial={{ opacity: 0, y: 20 }}
+                            key="products"
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            whileHover={{ y: -5, scale: 1.02 }}
-                            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+                            exit={{ opacity: 0, y: -10 }}
                         >
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-gray-600 text-sm font-medium mb-1">
-                                        {stat.label}
-                                    </p>
-                                    <p className={`text-3xl font-black bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
-                                        {stat.value}
-                                    </p>
+                            {/* Product Filters */}
+                            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 p-5 rounded-2xl shadow-xl mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="md:col-span-2 relative">
+                                    <Search className="absolute left-4 top-4 text-indigo-400 w-5 h-5" />
+                                    <input
+                                        type="text"
+                                        placeholder="Buscar productos..."
+                                        className="w-full pl-12 pr-4 py-3.5 bg-slate-950 border border-slate-800 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all"
+                                        value={searchTerm}
+                                        onChange={e => setSearchTerm(e.target.value)}
+                                    />
                                 </div>
-                                <div className={`${stat.iconBg} p-3 rounded-xl`}>
-                                    <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
-                                </div>
+                                <select
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3.5 text-white font-bold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+                                    value={filterCategory}
+                                    onChange={e => setFilterCategory(e.target.value)}
+                                >
+                                    {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                                <select
+                                    className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-3.5 text-white font-bold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer"
+                                    value={filterStatus}
+                                    onChange={e => setFilterStatus(e.target.value)}
+                                >
+                                    <option value="Todos">Todos</option>
+                                    <option value="Activos">Activos</option>
+                                    <option value="Inactivos">Inactivos</option>
+                                    <option value="Sin Stock">Sin Stock</option>
+                                </select>
                             </div>
-                        </motion.div>
-                    ))}
-                </motion.div>
 
-                {/* Filters */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="bg-white p-6 rounded-2xl shadow-lg mb-6 border border-gray-100"
-                >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {/* Search */}
-                        <div className="lg:col-span-2 relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <input
-                                type="text"
-                                placeholder="Buscar productos por nombre, categoría..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 bg-white text-gray-900 placeholder-gray-400 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition hover:border-gray-400"
-                            />
-                        </div>
-
-                        {/* Category */}
-                        <div className="relative">
-                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                            <select
-                                value={filterCategory}
-                                onChange={(e) => setFilterCategory(e.target.value)}
-                                className="w-full pl-10 pr-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition appearance-none cursor-pointer hover:border-gray-400"
-                            >
-                                {categories.map(cat => (
-                                    <option key={cat} value={cat}>{cat}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Status */}
-                        <div>
-                            <select
-                                value={filterStatus}
-                                onChange={(e) => setFilterStatus(e.target.value)}
-                                className="w-full px-4 py-3 border border-gray-300 bg-white text-gray-900 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-transparent transition appearance-none cursor-pointer hover:border-gray-400"
-                            >
-                                <option value="Todos">Todos los estados</option>
-                                <option value="Activos">Activos</option>
-                                <option value="Inactivos">Inactivos</option>
-                                <option value="Destacados">Destacados</option>
-                                <option value="Sin Stock">Sin Stock</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
-                        <span>
-                            Mostrando <span className="font-bold text-red-600">{filteredProducts.length}</span> de <span className="font-bold">{products.length}</span> productos
-                        </span>
-                    </div>
-                </motion.div>
-
-                {/* Products Table */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"
-                >
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gradient-to-r from-gray-50 to-gray-100">
-                                <tr>
-                                    <th
-                                        className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition"
-                                        onClick={() => {
-                                            setSortField('name')
-                                            setSortOrder(sortField === 'name' && sortOrder === 'asc' ? 'desc' : 'asc')
-                                        }}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            Producto
-                                            {sortField === 'name' && <ArrowUpDown className="w-4 h-4" />}
-                                        </div>
-                                    </th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                                        Categoría
-                                    </th>
-                                    <th
-                                        className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition"
-                                        onClick={() => {
-                                            setSortField('price')
-                                            setSortOrder(sortField === 'price' && sortOrder === 'asc' ? 'desc' : 'asc')
-                                        }}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            Precio
-                                            {sortField === 'price' && <ArrowUpDown className="w-4 h-4" />}
-                                        </div>
-                                    </th>
-                                    <th
-                                        className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-200 transition"
-                                        onClick={() => {
-                                            setSortField('stock')
-                                            setSortOrder(sortField === 'stock' && sortOrder === 'asc' ? 'desc' : 'asc')
-                                        }}
-                                    >
-                                        <div className="flex items-center gap-2">
-                                            Stock
-                                            {sortField === 'stock' && <ArrowUpDown className="w-4 h-4" />}
-                                        </div>
-                                    </th>
-                                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                                        Estado
-                                    </th>
-                                    <th className="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase tracking-wider">
-                                        Acciones
-                                    </th>
-                                </tr>
-                            </thead>
-
-                            <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredProducts.length > 0 ? (
-                                    filteredProducts.map((product: any, index) => (
-                                        <motion.tr
-                                            key={product.id}
-                                            initial={{ opacity: 0, x: -20 }}
-                                            animate={{ opacity: 1, x: 0 }}
-                                            transition={{ delay: index * 0.02 }}
-                                            className="hover:bg-red-50 transition-colors"
-                                        >
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="h-12 w-12 flex-shrink-0 relative group">
-                                                        {product.images?.[0] ? (
-                                                            <img
-                                                                className="h-12 w-12 rounded-lg object-cover border-2 border-gray-200 group-hover:scale-110 transition-transform duration-300"
-                                                                src={product.images[0]}
-                                                                alt={product.name}
-                                                            />
-                                                        ) : (
-                                                            <div className="h-12 w-12 rounded-lg bg-gray-200 flex items-center justify-center">
-                                                                <Package className="w-6 h-6 text-gray-400" />
+                            {/* Products Table */}
+                            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-950/50 border-b border-slate-800">
+                                            <tr>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Producto</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Estado</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Precio</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Stock</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider text-right">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-800">
+                                            {filteredProducts.map(product => (
+                                                <tr key={product.id} className="hover:bg-slate-800/50 transition-colors">
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-12 h-12 rounded-xl bg-slate-800 border border-slate-700 relative overflow-hidden">
+                                                                {product.images?.[0] && <img src={product.images[0]} alt="" className="w-full h-full object-cover" />}
                                                             </div>
-                                                        )}
-                                                    </div>
-                                                    <div>
-                                                        <div className="text-sm font-bold text-gray-900">
-                                                            {product.name}
+                                                            <div>
+                                                                <p className="font-bold text-white">{product.name}</p>
+                                                                <p className="text-xs text-slate-500">{product.category}</p>
+                                                            </div>
                                                         </div>
-                                                        <div className="text-xs text-gray-500">
-                                                            ID: {product.id.slice(0, 8)}...
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex gap-2">
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1 }}
+                                                                whileTap={{ scale: 0.9 }}
+                                                                onClick={() => toggleProductActive(product.id, product.active)}
+                                                                className={`p-2 rounded-xl ${product.active ? 'text-green-400 bg-green-500/20 border border-green-500/30' : 'text-slate-500 bg-slate-800 border border-slate-700'}`}
+                                                            >
+                                                                {product.active ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                                            </motion.button>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1 }}
+                                                                whileTap={{ scale: 0.9 }}
+                                                                onClick={() => toggleProductFeatured(product.id, product.featured)}
+                                                                className={`p-2 rounded-xl ${product.featured ? 'text-yellow-400 bg-yellow-500/20 border border-yellow-500/30' : 'text-slate-500 bg-slate-800 border border-slate-700'}`}
+                                                            >
+                                                                <Star className="w-4 h-4 fill-current" />
+                                                            </motion.button>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    {product.category}
-                                                </span>
-                                            </td>
-
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span className="text-lg font-bold text-gray-900">
-                                                    ${product.price.toFixed(2)}
-                                                </span>
-                                            </td>
-
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <span
-                                                    className={`text-sm font-bold px-3 py-1 rounded-full inline-flex items-center gap-2 ${product.stock > 10
-                                                        ? 'text-green-600 bg-green-50'
-                                                        : product.stock > 0
-                                                            ? 'text-yellow-600 bg-yellow-50'
-                                                            : 'text-red-600 bg-red-50'
-                                                        }`}
-                                                >
-                                                    {product.stock > 0 ? (
-                                                        <CheckCircle className="w-4 h-4" />
-                                                    ) : (
-                                                        <AlertCircle className="w-4 h-4" />
-                                                    )}
-                                                    {product.stock} und.
-                                                </span>
-                                            </td>
-
-                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                <div className="flex flex-col gap-2">
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={() => toggleActive(product.id, product.active)}
-                                                        className={`px-3 py-1 inline-flex items-center gap-1 text-xs leading-5 font-semibold rounded-full cursor-pointer transition-all justify-center ${product.active
-                                                            ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                                                            : 'bg-red-100 text-red-800 hover:bg-red-200'
-                                                            }`}
-                                                    >
-                                                        {product.active ? (
-                                                            <>
-                                                                <Eye className="w-3 h-3" />
-                                                                Activo
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <EyeOff className="w-3 h-3" />
-                                                                Inactivo
-                                                            </>
-                                                        )}
-                                                    </motion.button>
-
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={() => toggleFeatured(product.id, product.featured)}
-                                                        className={`px-3 py-1 inline-flex items-center gap-1 text-xs leading-5 font-semibold rounded-full cursor-pointer transition-all justify-center ${product.featured
-                                                            ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                                            }`}
-                                                    >
-                                                        <Star className={`w-3 h-3 ${product.featured ? 'fill-current' : ''}`} />
-                                                        {product.featured ? 'Destacado' : 'Normal'}
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-
-                                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div className="flex items-center justify-end gap-2">
-                                                    {/* View Button */}
-                                                    <Link href={`/productos/${product.id}`} target="_blank">
+                                                    </td>
+                                                    <td className="px-6 py-4 font-bold text-white">${product.price}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-3 py-1.5 rounded-xl text-xs font-bold ${product.stock > 0 ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                                                            {product.stock} und.
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right flex justify-end gap-2">
+                                                        <Link href={`/admin/productos/${product.id}/editar`}>
+                                                            <motion.button
+                                                                whileHover={{ scale: 1.1 }}
+                                                                whileTap={{ scale: 0.9 }}
+                                                                className="p-2.5 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 border border-blue-500/30 rounded-xl transition"
+                                                            >
+                                                                <Edit className="w-4 h-4" />
+                                                            </motion.button>
+                                                        </Link>
                                                         <motion.button
                                                             whileHover={{ scale: 1.1 }}
                                                             whileTap={{ scale: 0.9 }}
-                                                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition"
-                                                            title="Ver producto"
+                                                            onClick={() => setDeleteProductConfirm(product)}
+                                                            className="p-2.5 bg-red-500/20 hover:bg-red-500/30 text-red-400 border border-red-500/30 rounded-xl transition"
                                                         >
-                                                            <ExternalLink className="w-4 h-4" />
+                                                            <Trash2 className="w-4 h-4" />
                                                         </motion.button>
-                                                    </Link>
-
-                                                    {/* Edit Button */}
-                                                    <Link href={`/admin/productos/${product.id}/editar`}>
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.1 }}
-                                                            whileTap={{ scale: 0.9 }}
-                                                            className="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition"
-                                                            title="Editar producto"
-                                                        >
-                                                            <Edit className="w-4 h-4" />
-                                                        </motion.button>
-                                                    </Link>
-
-                                                    {/* Delete Button */}
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.1 }}
-                                                        whileTap={{ scale: 0.9 }}
-                                                        onClick={() => setDeleteConfirm({ id: product.id, name: product.name })}
-                                                        className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition"
-                                                        title="Eliminar producto"
-                                                    >
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </motion.button>
-                                                </div>
-                                            </td>
-                                        </motion.tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                                            <Package className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                                            <p className="text-lg font-medium">No se encontraron productos</p>
-                                            <p className="text-sm">Intenta con otros filtros o crea uno nuevo</p>
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </motion.div>
-            </div>
-
-            {/* Delete Confirmation Modal */}
-            <AnimatePresence>
-                {deleteConfirm && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"
-                        onClick={() => setDeleteConfirm(null)}
-                    >
-                        <motion.div
-                            initial={{ scale: 0.95, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.95, opacity: 0 }}
-                            className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6"
-                            onClick={e => e.stopPropagation()}
-                        >
-                            <div className="text-center mb-6">
-                                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-100 mb-4">
-                                    <AlertCircle className="w-7 h-7 text-red-600" />
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                    Eliminar producto
-                                </h3>
-                                <p className="text-gray-600">
-                                    ¿Estás seguro de que deseas eliminar <span className="font-bold">"{deleteConfirm.name}"</span>? Esta acción no se puede deshacer.
-                                </p>
-                            </div>
-
-                            <div className="flex gap-3">
-                                <motion.button
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => setDeleteConfirm(null)}
-                                    className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition"
-                                >
-                                    Cancelar
-                                </motion.button>
-                                <motion.button
-                                    whileTap={{ scale: 0.95 }}
-                                    onClick={() => handleDelete(deleteConfirm.id)}
-                                    className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition"
-                                >
-                                    Eliminar
-                                </motion.button>
                             </div>
                         </motion.div>
-                    </motion.div>
+                    ) : (
+                        <motion.div
+                            key="orders"
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                        >
+                            <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-slate-950/50 border-b border-slate-800">
+                                            <tr>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Orden ID</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Cliente</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Fecha</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Total</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Estado</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider">Pago</th>
+                                                <th className="px-6 py-4 text-xs font-black text-indigo-400 uppercase tracking-wider text-right">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-800">
+                                            {orders.map(order => (
+                                                <tr key={order.id} className="hover:bg-slate-800/50 transition-colors">
+                                                    <td className="px-6 py-4 text-xs font-mono text-slate-400">#{order.id.slice(-8).toUpperCase()}</td>
+                                                    <td className="px-6 py-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <User className="w-4 h-4 text-slate-500" />
+                                                            <div>
+                                                                <p className="text-sm font-bold text-white">{order.shippingName}</p>
+                                                                <p className="text-xs text-slate-500">{order.shippingEmail}</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-slate-400">
+                                                        {new Date(order.createdAt).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-6 py-4 font-black text-white">${order.total.toFixed(2)}</td>
+                                                    <td className="px-6 py-4">
+                                                        <StatusBadge status={order.status} />
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`text-xs px-3 py-1.5 rounded-xl font-bold border ${order.paymentStatus === 'completed'
+                                                            ? 'bg-green-500/20 text-green-400 border-green-500/30'
+                                                            : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'
+                                                            }`}>
+                                                            {order.paymentStatus}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right">
+                                                        <motion.button
+                                                            whileHover={{ scale: 1.05 }}
+                                                            whileTap={{ scale: 0.95 }}
+                                                            onClick={() => setUpdateOrderModal(order)}
+                                                            className="text-indigo-400 hover:text-indigo-300 text-sm font-bold"
+                                                        >
+                                                            Gestionar
+                                                        </motion.button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            {orders.length === 0 && (
+                                                <tr><td colSpan={7} className="p-12 text-center text-slate-500">No hay órdenes registradas</td></tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                {/* MODALS */}
+                {deleteProductConfirm && (
+                    <ConfirmModal
+                        title="Eliminar producto"
+                        message={`¿Eliminar "${deleteProductConfirm.name}"?`}
+                        onConfirm={() => handleDeleteProduct(deleteProductConfirm.id)}
+                        onCancel={() => setDeleteProductConfirm(null)}
+                    />
                 )}
-            </AnimatePresence>
-        </div >
+
+                {updateOrderModal && (
+                    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-md w-full p-8"
+                        >
+                            <h3 className="text-2xl font-black text-white mb-6">Actualizar Orden #{updateOrderModal.id.slice(-8)}</h3>
+                            <div className="space-y-3">
+                                <p className="text-sm text-slate-400 mb-4">Selecciona el nuevo estado del pedido:</p>
+                                {['PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED'].map(status => (
+                                    <motion.button
+                                        key={status}
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => handleUpdateOrderStatus(updateOrderModal.id, status)}
+                                        className={`w-full text-left px-5 py-4 rounded-xl border flex justify-between items-center transition font-bold ${updateOrderModal.status === status
+                                            ? 'bg-indigo-600/20 border-indigo-500/50 text-indigo-300'
+                                            : 'hover:bg-slate-800 border-slate-700 text-white'
+                                            }`}
+                                    >
+                                        {status}
+                                        {updateOrderModal.status === status && <CheckCircle className="w-5 h-5 text-indigo-400" />}
+                                    </motion.button>
+                                ))}
+                            </div>
+                            <button
+                                onClick={() => setUpdateOrderModal(null)}
+                                className="mt-6 w-full py-3 text-slate-400 hover:bg-slate-800 rounded-xl transition font-bold"
+                            >
+                                Cancelar
+                            </button>
+                        </motion.div>
+                    </div>
+                )}
+            </div>
+        </div>
+    )
+}
+
+function StatCard({ icon: Icon, label, value, color }: any) {
+    const colors: any = {
+        green: { bg: 'from-green-500/20 to-emerald-500/20', border: 'border-green-500/30', text: 'text-green-400', icon: 'text-green-400' },
+        blue: { bg: 'from-blue-500/20 to-indigo-500/20', border: 'border-blue-500/30', text: 'text-blue-400', icon: 'text-blue-400' },
+        purple: { bg: 'from-purple-500/20 to-violet-500/20', border: 'border-purple-500/30', text: 'text-purple-400', icon: 'text-purple-400' },
+        yellow: { bg: 'from-yellow-500/20 to-amber-500/20', border: 'border-yellow-500/30', text: 'text-yellow-400', icon: 'text-yellow-400' },
+    }
+    const style = colors[color]
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`bg-gradient-to-br ${style.bg} border ${style.border} backdrop-blur-xl p-6 rounded-2xl flex items-center justify-between hover:scale-105 transition-all shadow-xl`}
+        >
+            <div>
+                <p className="text-slate-400 text-sm font-bold mb-1">{label}</p>
+                <p className={`text-3xl font-black ${style.text}`}>{value}</p>
+            </div>
+            <div className={`p-4 rounded-xl bg-slate-900/50 border ${style.border}`}>
+                <Icon className={`w-6 h-6 ${style.icon}`} />
+            </div>
+        </motion.div>
+    )
+}
+
+function TabButton({ active, onClick, label, icon: Icon }: any) {
+    return (
+        <button
+            onClick={onClick}
+            className={`pb-4 px-4 flex items-center gap-2 font-black transition-all relative ${active ? 'text-indigo-400' : 'text-slate-500 hover:text-slate-300'
+                }`}
+        >
+            <Icon className="w-5 h-5" />
+            {label}
+            {active && <motion.div layoutId="tab-indicator" className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full" />}
+        </button>
+    )
+}
+
+function StatusBadge({ status }: { status: string }) {
+    const styles: any = {
+        PENDING: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+        PAID: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
+        SHIPPED: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+        DELIVERED: 'bg-green-500/20 text-green-400 border-green-500/30',
+        CANCELLED: 'bg-red-500/20 text-red-400 border-red-500/30',
+    }
+    return (
+        <span className={`px-3 py-1.5 rounded-xl text-xs font-bold border ${styles[status] || styles.PENDING}`}>
+            {status}
+        </span>
+    )
+}
+
+function ConfirmModal({ title, message, onConfirm, onCancel }: any) {
+    return (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl max-w-sm w-full p-8 text-center"
+            >
+                <div className="w-16 h-16 bg-red-500/20 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <AlertCircle className="w-8 h-8 text-red-400" />
+                </div>
+                <h3 className="text-2xl font-black text-white mb-3">{title}</h3>
+                <p className="text-slate-400 mb-8">{message}</p>
+                <div className="flex gap-3">
+                    <button onClick={onCancel} className="flex-1 py-3 border border-slate-700 text-white rounded-xl hover:bg-slate-800 transition font-bold">Cancelar</button>
+                    <button onClick={onConfirm} className="flex-1 py-3 bg-gradient-to-r from-red-600 to-rose-600 text-white rounded-xl hover:from-red-500 hover:to-rose-500 transition font-bold shadow-lg shadow-red-500/30">Confirmar</button>
+                </div>
+            </motion.div>
+        </div>
     )
 }

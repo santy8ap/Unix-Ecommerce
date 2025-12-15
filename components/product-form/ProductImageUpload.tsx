@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, Image as ImageIcon } from 'lucide-react'
 import ImageUpload from '../ImageUpload'
 
 interface ProductImageUploadProps {
@@ -21,26 +21,31 @@ export default function ProductImageUpload({
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-3"
+            className="space-y-4"
         >
-            <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                    <span className="text-red-600 font-bold">1</span>
+            <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-indigo-500/20 border border-indigo-500/30 rounded-xl flex items-center justify-center">
+                    <ImageIcon className="w-5 h-5 text-indigo-400" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900">Imágenes del producto</h3>
+                <div>
+                    <h3 className="text-base font-black text-white">Imágenes del Producto</h3>
+                    <p className="text-xs text-slate-400">Sube imágenes de alta calidad de tu producto</p>
+                </div>
             </div>
+
             <ImageUpload
                 value={images}
                 onChange={onChange}
                 maxFiles={8}
             />
+
             {touched && error && (
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="text-sm text-red-600 flex items-center gap-1"
+                    className="text-xs text-red-400 flex items-center gap-1 font-medium"
                 >
-                    <AlertCircle className="w-4 h-4" />
+                    <AlertCircle className="w-3 h-3" />
                     {error}
                 </motion.p>
             )}

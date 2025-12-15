@@ -5,9 +5,10 @@ import { useSession } from 'next-auth/react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowLeft, Edit, Package } from 'lucide-react'
+import { ArrowLeft, Info } from 'lucide-react'
 import ProductForm from '@/components/ProductForm'
-import Loading from '@/components/Loading'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 import { toast } from 'sonner'
 
 export default function EditProductPage() {
@@ -24,7 +25,6 @@ export default function EditProductPage() {
         }
 
         if (status === 'authenticated' && session?.user?.role !== 'ADMIN') {
-            toast.error('No tienes permisos de administrador')
             router.push('/')
             return
         }
@@ -32,17 +32,17 @@ export default function EditProductPage() {
         if (status === 'authenticated' && params.id) {
             fetchProduct()
         }
-    }, [status, session, params.id])
+    }, [status, session, params.id, router])
 
     const fetchProduct = async () => {
         try {
             const response = await fetch(`/api/products/${params.id}`)
-            if (!response.ok) throw new Error('Error al cargar producto')
+            if (!response.ok) throw new Error('Error loading product')
             const data = await response.json()
             setProduct(data)
         } catch (error) {
             console.error('Error:', error)
-            toast.error('No se pudo cargar el producto')
+            toast.error('Could not load product')
             router.push('/admin')
         } finally {
             setLoading(false)
@@ -50,81 +50,87 @@ export default function EditProductPage() {
     }
 
     if (status === 'loading' || loading) {
-        return <Loading />
+        return (
+            <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+                <div className="w-10 h-10 border-2 border-slate-200 border-t-slate-900 rounded-full animate-spin" />
+            </div>
+        )
     }
 
     if (!product) return null
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header with breadcrumb */}
-                <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mb-8"
-                >
-                    <div className="flex items-center gap-2 mb-6">
-                        <Link href="/admin" className="group">
-                            <motion.button
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold transition"
-                            >
-                                <ArrowLeft className="w-5 h-5" />
-                                Volver al Panel
-                            </motion.button>
-                        </Link>
-                    </div>
+        <div className="min-h-screen bg-slate-50">
+            <Navbar />
 
-                    <div className="flex items-start justify-between">
+            <div className="pt-32 pb-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="mb-8">
+                    <Link
+                        href="/admin"
+                        className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors mb-6"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        Back to Dashboard
+                    </Link>
+
+                    <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-4xl font-black text-gray-900 mb-2 flex items-center gap-3">
-                                <div className="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
-                                    <Edit className="w-8 h-8 text-white" />
-                                </div>
-                                Editar Producto
-                            </h1>
-                            <p className="text-gray-600 max-w-2xl">
-                                Modifica los detalles del producto a continuación. Los cambios se reflejarán inmediatamente en el catálogo.
-                            </p>
+                            <h1 className="text-3xl font-bold text-slate-900 mb-2">Edit Product</h1>
+                            <p className="text-slate-500">Update product details and inventory.</p>
                         </div>
                     </div>
-                </motion.div>
+                </div>
 
-                {/* Form */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8"
-                >
-                    <ProductForm product={product} isEdit={true} />
-                </motion.div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Main Form Area */}
+                    <div className="lg:col-span-2">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-white rounded-3xl shadow-sm border border-slate-100 p-8"
+                        >
+                            <ProductForm product={product} isEdit={true} />
+                        </motion.div>
+                    </div>
 
-                {/* Help section */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6"
-                >
-                    <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                        <Package className="w-5 h-5" />
-                        Recordatorios de edición
-                    </h3>
-                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-blue-800">
-                        <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">•</span>
-                            <span>Si cambias el precio, afectará a futuras compras</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                            <span className="text-blue-600 font-bold">•</span>
-                            <span>Puedes desactivar el producto temporalmente en lugar de eliminarlo</span>
-                        </li>
-                    </ul>
-                </motion.div>
+                    {/* Sidebar / Help */}
+                    <div className="space-y-6">
+                        <div className="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                            <div className="flex items-start gap-3">
+                                <Info className="w-5 h-5 text-amber-600 mt-0.5" />
+                                <div>
+                                    <h3 className="font-bold text-amber-900 text-sm mb-1">Editing Tips</h3>
+                                    <p className="text-xs text-amber-700 leading-relaxed">
+                                        Changes to price will affect future orders only.
+                                        You can deactivate a product instead of deleting it to keep sales history.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                            <h3 className="font-bold text-slate-900 text-sm mb-4">Product Status</h3>
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-500">Last Updated</span>
+                                    <span className="font-medium text-slate-900">
+                                        {new Date(product.updatedAt || Date.now()).toLocaleDateString()}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-slate-500">Total Sales</span>
+                                    <span className="font-medium text-slate-900">
+                                        {product.orderItems?.length || 0} units
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <Footer />
         </div>
     )
 }

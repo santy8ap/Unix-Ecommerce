@@ -36,9 +36,9 @@ export default function FormInput({
             animate={{ opacity: 1, y: 0 }}
             className="space-y-2"
         >
-            <label className="block text-sm font-semibold text-gray-900">
+            <label className="block text-sm font-bold text-slate-700">
                 {label}
-                {required && <span className="text-red-600 ml-1">*</span>}
+                {required && <span className="text-red-500 ml-1">*</span>}
             </label>
             {children || (
                 <input
@@ -46,9 +46,9 @@ export default function FormInput({
                     step={type === 'number' ? '0.01' : undefined}
                     value={value}
                     onChange={(e) => onChange(e.target.value)}
-                    className={`w-full px-4 py-3 border-2 rounded-lg transition focus:outline-none text-gray-900 placeholder-gray-400 ${hasError
-                        ? 'border-red-500 bg-red-50 focus:ring-2 focus:ring-red-200'
-                        : 'border-gray-300 bg-white focus:border-red-500 focus:ring-2 focus:ring-red-100 hover:border-gray-400'
+                    className={`w-full px-4 py-3 border rounded-xl transition-all focus:outline-none font-medium placeholder-slate-400 ${hasError
+                            ? 'border-red-500 bg-red-50 focus:ring-1 focus:ring-red-500 text-red-900'
+                            : 'border-slate-200 bg-white focus:border-slate-900 focus:ring-1 focus:ring-slate-900 hover:border-slate-300 text-slate-900'
                         }`}
                     placeholder={placeholder}
                 />
@@ -57,9 +57,9 @@ export default function FormInput({
                 <motion.p
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="text-sm text-red-600 flex items-center gap-1"
+                    className="text-xs text-red-500 flex items-center gap-1 font-medium"
                 >
-                    <AlertCircle className="w-4 h-4" />
+                    <AlertCircle className="w-3 h-3" />
                     {error}
                 </motion.p>
             )}

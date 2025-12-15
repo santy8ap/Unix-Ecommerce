@@ -41,11 +41,26 @@ model User {
   emailVerified DateTime?
   image         String?
   role          String    @default("USER")
-  accounts      Account[]
-  sessions      Session[]
-  orders        Order[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+
+  // UNIX: Preferencias de usuario
+  skinTone            String? // warm, cool, neutral
+  styleType           String? // casual, formal, sporty, elegant, bohemian
+  onboardingCompleted Boolean @default(false)
+
+  // Relaciones existentes
+  accounts       Account[]
+  sessions       Session[]
+  orders         Order[]
+  reviews        Review[]
+  returnRequests ReturnRequest[]
+
+  // UNIX: Nuevas relaciones
+  closetItems        ClosetItem[]
+  outfits            Outfit[]
+  colorimetryResults ColorimetryResult[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
@@ -57,20 +72,28 @@ model VerificationToken {
 }
 
 model Product {
-  id          String      @id @default(cuid())
+  id          String @id @default(cuid())
   name        String
   description String
   price       Float
-  images      String
+  images      String[]
   category    String
-  sizes       String
-  colors      String
-  stock       Int         @default(0)
-  featured    Boolean     @default(false)
-  active      Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  sizes       String[]
+  colors      String[] // Array de colores: ["red", "blue", "black"]
+
+  // UNIX: Enriquecimiento de productos
+  styleTypes String[] // Array de estilos: ["casual", "formal", "sporty"]
+
+  stock     Int      @default(0)
+  featured  Boolean  @default(false)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
   orderItems  OrderItem[]
+  reviews     Review[]
+  closetItems ClosetItem[] // UNIX: Productos que están en closets de usuarios
 }
 
 model Order {
@@ -78,7 +101,10 @@ model Order {
   userId          String
   user            User        @relation(fields: [userId], references: [id])
   total           Float
-  status          String      @default("PENDING")
+  status          String      @default("PENDING") // PENDING, PAID, SHIPPED, DELIVERED, CANCELLED
+  paymentStatus   String      @default("pending") // pending, completed, failed
+  paymentMethod   String      @default("bitcoin") // bitcoin (cryptocurrency)
+  transactionId   String?     // Coinbase charge code
   items           OrderItem[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -87,9 +113,8 @@ model Order {
   shippingAddress String
   shippingCity    String
   shippingZip     String
+  shippingPhone   String?
 }
-
-
 
 model OrderItem {
   id        String  @id @default(cuid())
@@ -106,9 +131,9 @@ model OrderItem {
 model Coupon {
   id          String   @id @default(cuid())
   code        String   @unique
-  discount    Int      // Porcentaje de descuento (0-100)
-  minAmount   Float?   // Monto mínimo para aplicar el cupón
-  maxUses     Int?     // Máximo número de usos (null = ilimitado)
+  discount    Int // Porcentaje de descuento (0-100)
+  minAmount   Float? // Monto mínimo para aplicar el cupón
+  maxUses     Int? // Máximo número de usos (null = ilimitado)
   currentUses Int      @default(0)
   validFrom   DateTime @default(now())
   validUntil  DateTime
@@ -118,4 +143,225 @@ model Coupon {
 
   @@index([code])
   @@index([active])
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating           Int // 1-5 stars
+  title            String
+  comment          String
+  images           String? // JSON array of image URLs
+  verifiedPurchase Boolean  @default(false)
+  helpfulCount     Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+  @@index([rating])
+}
+
+model GiftCard {
+  id             String    @id @default(cuid())
+  code           String    @unique
+  initialAmount  Float
+  currentAmount  Float
+  recipientEmail String?
+  recipientName  String?
+  message        String?
+  purchasedBy    String? // User email
+  redeemedBy     String? // User email
+  redeemedAt     DateTime?
+  expiresAt      DateTime
+  active         Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([code])
+  @@index([active])
+}
+
+model ReturnRequest {
+  id           String   @id @default(cuid())
+  orderId      String
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  reason       String
+  description  String
+  images       String? // JSON array of image URLs
+  status       String   @default("PENDING") // PENDING, APPROVED, REJECTED, COMPLETED
+  refundAmount Float
+  refundMethod String? // ORIGINAL_PAYMENT, STORE_CREDIT, etc.
+  adminNotes   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Newsletter {
+  id             String    @id @default(cuid())
+  email          String    @unique
+  name           String?
+  confirmed      Boolean   @default(false)
+  confirmToken   String?   @unique
+  source         String? // FOOTER, POPUP, CHECKOUT, etc.
+  subscribedAt   DateTime  @default(now())
+  confirmedAt    DateTime?
+  unsubscribedAt DateTime?
+
+  @@index([email])
+  @@index([confirmed])
+}
+
+model BlogPost {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String
+  content     String // HTML or Markdown content
+  coverImage  String?
+  author      String
+  category    String
+  tags        String // JSON array
+  published   Boolean   @default(false)
+  views       Int       @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([slug])
+  @@index([published])
+  @@index([category])
+}
+
+model Banner {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  image       String
+  link        String?
+  buttonText  String?
+  position    String // HERO, TOP, SIDEBAR, etc.
+  active      Boolean   @default(true)
+  startDate   DateTime  @default(now())
+  endDate     DateTime?
+  clicks      Int       @default(0)
+  priority    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([active])
+  @@index([position])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String // ORDER, LOW_STOCK, RETURN_REQUEST, etc.
+  title     String
+  message   String
+  data      String? // JSON data
+  read      Boolean  @default(false)
+  actionUrl String?
+  createdAt DateTime @default(now())
+
+  @@index([read])
+  @@index([type])
+}
+
+// ============================================
+// 🎨 UNIX - Fashion AI Platform Models
+// ============================================
+
+model Outfit {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name        String
+  description String?
+  items       Json // JSON array de items del outfit
+  occasion    String? // casual, formal, party, business, date, sport
+  season      String? // spring, summer, autumn, winter, all-season
+
+  // Metadata
+  aiGenerated Boolean @default(false)
+  favorite    Boolean @default(false)
+  timesWorn   Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([occasion])
+  @@index([favorite])
+}
+
+model ClosetItem {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Opcional: Si viene de un producto de la tienda
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  // Detalles del item
+  name     String
+  category String // shirt, pants, shoes, dress, jacket, accessories, etc.
+  color    String
+  colors   String? // JSON array si tiene múltiples colores
+  image    String?
+  brand    String?
+  size     String?
+  price    Float?
+
+  // Source: de dónde viene el item
+  source String @default("user") // user, store, gift
+
+  // Metadata
+  favorite  Boolean   @default(false)
+  timesWorn Int       @default(0)
+  lastWorn  DateTime?
+  notes     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([category])
+  @@index([source])
+}
+
+model ColorimetryResult {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Resultados del análisis
+  skinTone  String // warm, cool, neutral
+  season    String? // spring, summer, autumn, winter (opcional, más detallado)
+  undertone String? // golden, pink, olive (opcional)
+
+  // Paletas de colores (Arrays nativos)
+  bestColors  String[]
+  goodColors  String[]
+  avoidColors String[]
+
+  // Recomendaciones
+  recommendations Json? // Objeto JSON con consejos personalizados
+
+  // Metadata
+  aiGenerated Boolean @default(true)
+  confidence  Float? // 0.0 - 1.0
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([skinTone])
 }

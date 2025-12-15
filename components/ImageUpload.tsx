@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { useDropzone } from 'react-dropzone'
 import Image from 'next/image'
 import { CldUploadWidget } from 'next-cloudinary'
-import { Upload, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Upload, X, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react'
 
 type ImageUploadProps = {
     value: string[]
@@ -26,7 +26,7 @@ export default function ImageUpload({
         if (result.event === 'success') {
             const imageUrl = result.info.secure_url
             onChange([...value, imageUrl])
-            toast.success('Imagen subida exitosamente')
+            toast.success('Image uploaded successfully')
         }
     }
 
@@ -34,13 +34,13 @@ export default function ImageUpload({
     const onDrop = useCallback(async (acceptedFiles: File[]) => {
         if (acceptedFiles.length === 0) return
         if (value.length >= maxFiles) {
-            toast.error(`Máximo ${maxFiles} imágenes permitidas`)
+            toast.error(`Maximum ${maxFiles} images allowed`)
             return
         }
 
         setUploading(true)
         const uploadedUrls: string[] = []
-        const loadingToast = toast.loading(`Subiendo ${acceptedFiles.length} imagen(es)...`)
+        const toastId = toast.loading(`Uploading ${acceptedFiles.length} image(s)...`)
 
         for (let i = 0; i < acceptedFiles.length; i++) {
             const file = acceptedFiles[i]
@@ -71,23 +71,22 @@ export default function ImageUpload({
 
                 if (!response.ok) {
                     const errorData = await response.json()
-                    throw new Error(errorData.error || 'Error al subir imagen')
+                    throw new Error(errorData.error || 'Error uploading image')
                 }
 
                 const data = await response.json()
                 uploadedUrls.push(data.url)
-                toast.success(`✅ ${file.name} subida`, { duration: 2000 })
             } catch (error) {
                 console.error('Error uploading image:', error)
-                toast.error(`❌ Error al subir ${file.name}`)
+                toast.error(`Error uploading ${file.name}`)
             }
         }
 
         if (uploadedUrls.length > 0) {
             onChange([...value, ...uploadedUrls])
-            toast.success(`${uploadedUrls.length} imagen(es) subida(s) exitosamente`, { id: loadingToast })
+            toast.success(`${uploadedUrls.length} image(s) uploaded successfully`, { id: toastId })
         } else {
-            toast.error('No se pudieron subir las imágenes', { id: loadingToast })
+            toast.error('Could not upload images', { id: toastId })
         }
 
         setUploading(false)
@@ -106,7 +105,7 @@ export default function ImageUpload({
     const removeImage = (index: number) => {
         const newImages = value.filter((_, i) => i !== index)
         onChange(newImages)
-        toast.success('Imagen removida')
+        toast.success('Image removed')
     }
 
     const moveImage = (from: number, to: number) => {
@@ -117,25 +116,25 @@ export default function ImageUpload({
     }
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <label className="block text-sm font-semibold text-gray-700">
-                    Imágenes del producto ({value.length}/{maxFiles})
+                <label className="block text-sm font-bold text-slate-700">
+                    Gallery ({value.length}/{maxFiles})
                 </label>
                 {value.length > 0 && (
-                    <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                        ✅ {value.length} cargadas
+                    <span className="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded-full font-bold">
+                        {value.length} uploaded
                     </span>
                 )}
             </div>
 
             {/* Preview Grid */}
             {value.length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {value.map((url, index) => (
                         <div
                             key={`${url}-${index}`}
-                            className="relative group aspect-square rounded-lg overflow-hidden border-2 border-gray-200 hover:border-red-500 transition"
+                            className="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-50"
                         >
                             <Image
                                 src={url}
@@ -146,13 +145,13 @@ export default function ImageUpload({
                             />
 
                             {/* Overlay */}
-                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                            <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-[2px]">
                                 {index > 0 && (
                                     <button
                                         type="button"
                                         onClick={() => moveImage(index, index - 1)}
-                                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition"
-                                        title="Mover a la izquierda"
+                                        className="p-1.5 bg-white/90 rounded-lg hover:bg-white transition text-slate-900"
+                                        title="Move left"
                                     >
                                         <ChevronLeft className="w-4 h-4" />
                                     </button>
@@ -161,8 +160,8 @@ export default function ImageUpload({
                                 <button
                                     type="button"
                                     onClick={() => removeImage(index)}
-                                    className="p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-                                    title="Eliminar"
+                                    className="p-1.5 bg-red-500/90 text-white rounded-lg hover:bg-red-500 transition"
+                                    title="Remove"
                                 >
                                     <X className="w-4 h-4" />
                                 </button>
@@ -171,8 +170,8 @@ export default function ImageUpload({
                                     <button
                                         type="button"
                                         onClick={() => moveImage(index, index + 1)}
-                                        className="p-2 bg-white rounded-full hover:bg-gray-100 transition"
-                                        title="Mover a la derecha"
+                                        className="p-1.5 bg-white/90 rounded-lg hover:bg-white transition text-slate-900"
+                                        title="Move right"
                                     >
                                         <ChevronRight className="w-4 h-4" />
                                     </button>
@@ -181,8 +180,8 @@ export default function ImageUpload({
 
                             {/* Badge */}
                             {index === 0 && (
-                                <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded font-semibold">
-                                    Principal
+                                <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] px-2 py-1 rounded-lg font-bold">
+                                    Cover
                                 </div>
                             )}
                         </div>
@@ -190,12 +189,14 @@ export default function ImageUpload({
                 </div>
             )}
 
-            {/* Cloudinary Widget & Dropzone */}
+            {/* Upload Area */}
             {value.length < maxFiles && (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Cloudinary Upload Widget */}
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg p-6">
-                        <h3 className="text-sm font-semibold text-gray-700 mb-3">Subir con Cloudinary</h3>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 flex flex-col items-center justify-center text-center">
+                        <ImageIcon className="w-8 h-8 text-slate-400 mb-3" />
+                        <h3 className="text-sm font-bold text-slate-900 mb-1">Cloud Upload</h3>
+                        <p className="text-xs text-slate-500 mb-4">Use Cloudinary widget</p>
                         <CldUploadWidget
                             uploadPreset="red_estampacion"
                             onSuccess={handleCloudinaryUpload}
@@ -217,23 +218,22 @@ export default function ImageUpload({
                                 <button
                                     type="button"
                                     onClick={() => open()}
-                                    className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition font-semibold"
+                                    className="w-full bg-white border border-slate-200 hover:border-slate-300 text-slate-700 py-2.5 rounded-lg transition text-sm font-bold shadow-sm"
                                 >
-                                    <Upload className="w-5 h-5" />
-                                    Seleccionar imágenes
+                                    Select Files
                                 </button>
                             )}
                         </CldUploadWidget>
                     </div>
 
-                    {/* Dropzone Alternative */}
+                    {/* Dropzone */}
                     <div
                         {...getRootProps()}
                         className={`
-                            border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all
+                            border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all flex flex-col items-center justify-center
                             ${isDragActive
-                                ? 'border-red-500 bg-red-50'
-                                : 'border-gray-300 hover:border-red-400 bg-gray-50 hover:bg-gray-100'
+                                ? 'border-slate-900 bg-slate-50'
+                                : 'border-slate-200 hover:border-slate-400 hover:bg-slate-50'
                             }
                             ${uploading ? 'opacity-50 cursor-not-allowed' : ''}
                         `}
@@ -241,39 +241,28 @@ export default function ImageUpload({
                         <input {...getInputProps()} />
 
                         {uploading ? (
-                            <div className="space-y-4">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
-                                <p className="text-gray-600 font-medium">Subiendo... {Math.round(uploadProgress)}%</p>
-                                <div className="w-full bg-gray-200 rounded-full h-2 max-w-xs mx-auto overflow-hidden">
+                            <div className="space-y-3 w-full">
+                                <div className="w-8 h-8 border-2 border-slate-200 border-t-slate-900 rounded-full animate-spin mx-auto" />
+                                <p className="text-xs font-bold text-slate-900">Uploading... {Math.round(uploadProgress)}%</p>
+                                <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                                     <div
-                                        className="bg-red-600 h-2 rounded-full transition-all duration-300"
+                                        className="bg-slate-900 h-full rounded-full transition-all duration-300"
                                         style={{ width: `${uploadProgress}%` }}
-                                    ></div>
+                                    />
                                 </div>
                             </div>
-                        ) : isDragActive ? (
-                            <div className="space-y-2">
-                                <Upload className="mx-auto h-12 w-12 text-red-500" />
-                                <p className="text-red-600 font-semibold">¡Suelta las imágenes aquí!</p>
-                            </div>
                         ) : (
-                            <div className="space-y-2">
-                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                <p className="text-gray-600">
-                                    <span className="font-semibold text-red-600">Click para seleccionar</span> o arrastra imágenes
+                            <>
+                                <Upload className={`w-8 h-8 mb-3 ${isDragActive ? 'text-slate-900' : 'text-slate-400'}`} />
+                                <p className="text-sm font-bold text-slate-900 mb-1">
+                                    {isDragActive ? 'Drop files here' : 'Drag & Drop'}
                                 </p>
-                                <p className="text-xs text-gray-500">
-                                    JPG, PNG, WebP, GIF • Máximo 10MB
+                                <p className="text-xs text-slate-500">
+                                    or click to browse
                                 </p>
-                            </div>
+                            </>
                         )}
                     </div>
-                </div>
-            )}
-
-            {value.length >= maxFiles && (
-                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-700 text-sm">
-                    ⚠️ Máximo de imágenes alcanzado ({maxFiles})
                 </div>
             )}
         </div>
