@@ -141,7 +141,7 @@ export default function Navbar() {
 
                             {/* User Menu / Sign In */}
                             {session ? (
-                                <UserMenu session={session} />
+                                <UserMenu session={session} locale={locale} t={t} />
                             ) : (
                                 <motion.button
                                     onClick={() => signIn('google')}

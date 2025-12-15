@@ -9,11 +9,11 @@ import { useWishlist } from '@/context/WishlistContext'
 import { useLanguage } from '@/context/LanguageContext'
 import { toast } from 'sonner'
 import { getProductImage, parseJSON } from '@/lib/utils'
-import { Product } from '@/types'
+import { ProductWithParsedImages } from '@/types'
 import RecommendationBadge from './RecommendationBadge'
 
 interface ProductCardProps {
-  product: Product & {
+  product: ProductWithParsedImages & {
     isRecommendedColor?: boolean
     isRecommendedStyle?: boolean
     isRecommended?: boolean
@@ -157,7 +157,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                   {/* Size Selector */}
                   {sizes.length > 0 && (
                     <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-hide">
-                      {(Array.isArray(sizes) ? sizes : []).slice(0, 4).map((size: string) => (
+                      {sizes.slice(0, 4).map((size: string) => (
                         <button
                           key={size}
                           onClick={(e) => {

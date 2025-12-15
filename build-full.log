@@ -1,0 +1,38 @@
+
+> red-estampacion@0.1.0 build
+> next build
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ⚠ `eslint` configuration in next.config.ts is no longer supported. See more info here: https://nextjs.org/docs/app/api-reference/cli/next#next-lint-options
+ ⚠ Invalid next.config.ts options detected: 
+ ⚠     Unrecognized key(s) in object: 'eslint'
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/santi/package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * /home/santi/Documentos/Red-Estampacion/package-lock.json
+
+   ▲ Next.js 16.0.3 (Turbopack)
+   - Environments: .env.local, .env
+
+ ⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+ ✓ Compiled successfully in 31.3s
+   Running TypeScript ...
+Failed to compile.
+
+./components/ProductCard.tsx:160:72
+Type error: Property 'map' does not exist on type 'string | never[]'.
+  Property 'map' does not exist on type 'string'.
+
+[0m [90m 158 |[39m                   {sizes[33m.[39mlength [33m>[39m [35m0[39m [33m&&[39m (
+ [90m 159 |[39m                     [33m<[39m[33mdiv[39m className[33m=[39m[32m"flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-hide"[39m[33m>[39m
+[31m[1m>[22m[39m[90m 160 |[39m                       {([33mArray[39m[33m.[39misArray(sizes) [33m?[39m sizes [33m:[39m [])[33m.[39mslice([35m0[39m[33m,[39m [35m4[39m)[33m.[39mmap((size[33m:[39m string) [33m=>[39m (
+ [90m     |[39m                                                                        [31m[1m^[22m[39m
+ [90m 161 |[39m                         [33m<[39m[33mbutton[39m
+ [90m 162 |[39m                           key[33m=[39m{size}
+ [90m 163 |[39m                           onClick[33m=[39m{(e) [33m=>[39m {[0m
+Next.js build worker exited with code: 1 and signal: null
