@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 import { useWishlist } from '@/context/WishlistContext'
-import { useRecentlyViewed } from '@/components/RecentlyViewedProducts'
+import { trackProductView } from '@/components/RecentlyViewedProducts'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
 import ProductReviews from '@/components/ProductReviews'
@@ -31,7 +31,6 @@ export default function ProductDetailPage() {
     const router = useRouter()
     const { addItem } = useCart()
     const { items: wishlistItems, addItem: addToWishlist, removeItem: removeFromWishlist } = useWishlist()
-    const { addToRecentlyViewed } = useRecentlyViewed()
 
     const [product, setProduct] = useState<Product | null>(null)
     const [loading, setLoading] = useState(true)
@@ -46,7 +45,7 @@ export default function ProductDetailPage() {
     useEffect(() => {
         if (params.id) {
             fetchProduct()
-            addToRecentlyViewed(params.id as string)
+            trackProductView(params.id as string)
         }
     }, [params.id])
 

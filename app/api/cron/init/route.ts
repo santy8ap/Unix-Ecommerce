@@ -4,19 +4,17 @@
  */
 
 import { NextResponse } from 'next/server'
-import { initCronJobs, getCronJobsStatus } from '@/lib/cron/jobs'
+import { initCronJobs } from '@/lib/cron/jobs'
 
 // This will be called automatically by Next.js instrumentation
 // or can be called manually via API
 export async function GET() {
     try {
         initCronJobs()
-        const status = getCronJobsStatus()
 
         return NextResponse.json({
             success: true,
             message: 'Cron jobs initialized successfully',
-            jobs: status,
         })
     } catch (error: any) {
         console.error('Error initializing cron jobs:', error)
