@@ -58,17 +58,23 @@ export async function POST(req: NextRequest) {
                     try {
                         await sendOrderConfirmation({
                             orderId: order.id,
-                            customerName: order.shippingName,
-                            customerEmail: order.shippingEmail,
+                            userName: order.shippingName,
+                            userEmail: order.shippingEmail,
                             total: order.total,
-                            items: order.items,
-                            shippingAddress: {
-                                address: order.shippingAddress,
-                                city: order.shippingCity,
-                                zip: order.shippingZip,
-                                name: order.shippingName,
-                                email: order.shippingEmail
-                            }
+                            items: order.items.map(item => ({
+                                name: item.product.name,
+                                quantity: item.quantity,
+                                price: item.price,
+                                size: item.size,
+                                color: item.color
+                            })),
+                            shippingAddress: `${order.shippingAddress}, ${order.shippingCity}, ${order.shippingZip}`,
+                            paymentMethod: order.paymentMethod || 'Bitcoin',
+                            orderDate: order.createdAt.toLocaleDateString('es-ES', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })
                         })
                     } catch (error) {
                         console.error('Failed to send confirmation email from webhook:', error)
