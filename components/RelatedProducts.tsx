@@ -6,6 +6,7 @@ import ProductCard from './ProductCard'
 import { Product } from '@/types'
 import { ArrowRight, Sparkles } from 'lucide-react'
 import Link from 'next/link'
+import { parseJSON } from '@/lib/utils'
 
 interface RelatedProductsProps {
     productId: string
@@ -77,17 +78,25 @@ export default function RelatedProducts({ productId }: RelatedProductsProps) {
 
             {/* Products Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {products.map((product, idx) => (
-                    <motion.div
-                        key={product.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: idx * 0.05 }}
-                    >
-                        <ProductCard product={product} />
-                    </motion.div>
-                ))}
+                {products.map((product, idx) => {
+                    const parsedProduct = {
+                        ...product,
+                        images: parseJSON(product.images, []),
+                        sizes: parseJSON(product.sizes, []),
+                        colors: parseJSON(product.colors, [])
+                    }
+                    return (
+                        <motion.div
+                            key={product.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: idx * 0.05 }}
+                        >
+                            <ProductCard product={parsedProduct} />
+                        </motion.div>
+                    )
+                })}
             </div>
 
             {/* Mobile View All */}
