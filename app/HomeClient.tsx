@@ -8,6 +8,7 @@ import { ArrowRight, Star, TrendingUp, Sparkles, Wand2, Palette, ShoppingBag } f
 import { useLanguage } from '@/context/LanguageContext'
 import { Product } from '@/types'
 import { useSession } from 'next-auth/react'
+import { parseJSON } from '@/lib/utils'
 
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
@@ -409,11 +410,19 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                         transition={{ duration: 0.8 }}
                         className="flex gap-8 overflow-x-auto pb-12 px-4 sm:px-6 lg:px-8 snap-x snap-mandatory scrollbar-hide max-w-[1920px] mx-auto"
                     >
-                        {featuredProducts.length > 0 ? featuredProducts.map((product, i) => (
-                            <div key={product.id} className="min-w-[300px] md:min-w-[380px] snap-center">
-                                <ProductCard product={product} />
-                            </div>
-                        )) : (
+                        {featuredProducts.length > 0 ? featuredProducts.map((product, i) => {
+                            const parsedProduct = {
+                                ...product,
+                                images: parseJSON(product.images, []),
+                                sizes: parseJSON(product.sizes, []),
+                                colors: parseJSON(product.colors, [])
+                            }
+                            return (
+                                <div key={product.id} className="min-w-[300px] md:min-w-[380px] snap-center">
+                                    <ProductCard product={parsedProduct} />
+                                </div>
+                            )
+                        }) : (
                             <div className="w-full text-center py-20 text-slate-400">No hay productos destacados por el momento.</div>
                         )}
 

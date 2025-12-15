@@ -8,6 +8,7 @@ import { Search, ChevronDown, X, Filter, SlidersHorizontal, ChevronLeft, Chevron
 import { motion, AnimatePresence } from 'framer-motion'
 import { logger } from '@/lib/logger'
 import { Product } from '@/types'
+import { parseJSON } from '@/lib/utils'
 
 const CATEGORIES = ['Todas', 'Casual', 'Deportiva', 'Formal', 'Vintage', 'Estampada']
 const COLORS = ['Todos', 'Blanco', 'Negro', 'Gris', 'Azul', 'Rojo', 'Verde', 'Amarillo']
@@ -350,16 +351,24 @@ export default function ProductsContent() {
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                                    {products.map((product, idx) => (
-                                        <motion.div
-                                            key={product.id}
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: idx * 0.05 }}
-                                        >
-                                            <ProductCard product={product} />
-                                        </motion.div>
-                                    ))}
+                                    {products.map((product, idx) => {
+                                        const parsedProduct = {
+                                            ...product,
+                                            images: parseJSON(product.images, []),
+                                            sizes: parseJSON(product.sizes, []),
+                                            colors: parseJSON(product.colors, [])
+                                        }
+                                        return (
+                                            <motion.div
+                                                key={product.id}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: idx * 0.05 }}
+                                            >
+                                                <ProductCard product={parsedProduct} />
+                                            </motion.div>
+                                        )
+                                    })}
                                 </div>
                             </motion.div>
 

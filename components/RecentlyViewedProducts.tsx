@@ -6,6 +6,7 @@ import ProductCard from './ProductCard'
 import { Product } from '@/types'
 import { Eye } from 'lucide-react'
 import { logger } from '@/lib/logger'
+import { parseJSON } from '@/lib/utils'
 
 const MAX_RECENT_PRODUCTS = 8
 
@@ -95,18 +96,26 @@ export default function RecentlyViewedProducts() {
                 {/* Products Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                     <AnimatePresence>
-                        {recentProducts.map((product, idx) => (
-                            <motion.div
-                                key={product.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: idx * 0.05 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
-                            >
-                                <ProductCard product={product} />
-                            </motion.div>
-                        ))}
+                        {recentProducts.map((product, idx) => {
+                            const parsedProduct = {
+                                ...product,
+                                images: parseJSON(product.images, []),
+                                sizes: parseJSON(product.sizes, []),
+                                colors: parseJSON(product.colors, [])
+                            }
+                            return (
+                                <motion.div
+                                    key={product.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: idx * 0.05 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                >
+                                    <ProductCard product={parsedProduct} />
+                                </motion.div>
+                            )
+                        })}
                     </AnimatePresence>
                 </div>
             </div>
@@ -131,7 +140,7 @@ export function trackProductView(productId: string) {
 
         localStorage.setItem('recentlyViewed', JSON.stringify(ids))
     } catch (error) {
-        logger.error('Error al rastrear producto visto', error, { 
+        logger.error('Error al rastrear producto visto', error, {
             context: 'RECENTLY_VIEWED',
             metadata: { productId }
         })
