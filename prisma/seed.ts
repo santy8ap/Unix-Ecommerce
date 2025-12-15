@@ -34,10 +34,10 @@ async function main() {
       name: 'Camiseta Básica Negra',
       description: 'Camiseta de algodón 100% premium, perfecta para el día a día',
       price: 29.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=1']),
+      images: ['https://picsum.photos/500/500?random=1'],
       category: 'Casual',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Negro', 'Blanco', 'Gris']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Negro', 'Blanco', 'Gris'],
       stock: 100,
       featured: true,
       active: true
@@ -46,10 +46,10 @@ async function main() {
       name: 'Sudadera con Capucha',
       description: 'Sudadera cómoda y abrigada, ideal para el invierno',
       price: 49.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=2']),
+      images: ['https://picsum.photos/500/500?random=2'],
       category: 'Casual',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL', 'XXL']),
-      colors: JSON.stringify(['Azul', 'Negro', 'Gris']),
+      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+      colors: ['Azul', 'Negro', 'Gris'],
       stock: 75,
       featured: true,
       active: true
@@ -58,10 +58,10 @@ async function main() {
       name: 'Polo Deportivo',
       description: 'Polo técnico con tecnología dry-fit para mantener la frescura',
       price: 34.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=3']),
+      images: ['https://picsum.photos/500/500?random=3'],
       category: 'Deportiva',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Azul', 'Rojo', 'Verde']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Azul', 'Rojo', 'Verde'],
       stock: 60,
       featured: true,
       active: true
@@ -70,10 +70,10 @@ async function main() {
       name: 'Camisa Formal Blanca',
       description: 'Camisa elegante para ocasiones especiales',
       price: 59.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=4']),
+      images: ['https://picsum.photos/500/500?random=4'],
       category: 'Formal',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Blanco', 'Azul', 'Negro']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Blanco', 'Azul', 'Negro'],
       stock: 40,
       featured: false,
       active: true
@@ -82,10 +82,10 @@ async function main() {
       name: 'Camiseta Vintage Rock',
       description: 'Diseño retro inspirado en las bandas clásicas',
       price: 39.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=5']),
+      images: ['https://picsum.photos/500/500?random=5'],
       category: 'Vintage',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Negro', 'Gris']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Negro', 'Gris'],
       stock: 50,
       featured: true,
       active: true
@@ -94,10 +94,10 @@ async function main() {
       name: 'Camiseta Estampada Tropical',
       description: 'Diseño tropical perfecto para el verano',
       price: 32.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=6']),
+      images: ['https://picsum.photos/500/500?random=6'],
       category: 'Estampada',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Blanco', 'Amarillo', 'Verde']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Blanco', 'Amarillo', 'Verde'],
       stock: 80,
       featured: true,
       active: true
@@ -106,10 +106,10 @@ async function main() {
       name: 'Joggers Deportivos',
       description: 'Pantalones cómodos para entrenar o relajarse',
       price: 44.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=7']),
+      images: ['https://picsum.photos/500/500?random=7'],
       category: 'Deportiva',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL', 'XXL']),
-      colors: JSON.stringify(['Negro', 'Gris', 'Azul']),
+      sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+      colors: ['Negro', 'Gris', 'Azul'],
       stock: 65,
       featured: false,
       active: true
@@ -118,10 +118,10 @@ async function main() {
       name: 'Blazer Casual',
       description: 'Blazer moderno para un look semi-formal',
       price: 89.99,
-      images: JSON.stringify(['https://picsum.photos/500/500?random=8']),
+      images: ['https://picsum.photos/500/500?random=8'],
       category: 'Formal',
-      sizes: JSON.stringify(['S', 'M', 'L', 'XL']),
-      colors: JSON.stringify(['Negro', 'Gris', 'Azul']),
+      sizes: ['S', 'M', 'L', 'XL'],
+      colors: ['Negro', 'Gris', 'Azul'],
       stock: 30,
       featured: true,
       active: true
@@ -129,7 +129,7 @@ async function main() {
   ]
 
   console.log('🌱 Creando productos...')
-  
+
   for (const product of products) {
     const exists = await prisma.product.findFirst({
       where: { name: product.name }

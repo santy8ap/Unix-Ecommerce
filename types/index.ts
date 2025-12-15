@@ -3,10 +3,10 @@ export interface Product {
     name: string
     description: string
     price: number
-    images: string
+    images: string[]
     category: string
-    sizes: string
-    colors: string
+    sizes: string[]
+    colors: string[]
     stock: number
     featured: boolean
     active: boolean
