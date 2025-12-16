@@ -17,12 +17,12 @@ import {
     Sparkles,
     Search
 } from 'lucide-react'
-import DesktopNav from './navbar/DesktopNav'
-import MobileNav from './navbar/MobileNav'
-import UserMenu from './navbar/UserMenu'
-import SearchModal from './SearchModal'
-import LanguageSelector from './LanguageSelector'
-import NotificationsDropdown from './NotificationsDropdown'
+import DesktopNav from '../navbar/DesktopNav'
+import MobileNav from '../navbar/MobileNav'
+import UserMenu from '../navbar/UserMenu'
+import SearchModal from '../shared/SearchModal'
+import LanguageSelector from '../shared/LanguageSelector'
+import NotificationsDropdown from '../shared/NotificationsDropdown'
 
 export default function Navbar() {
     const { data: session } = useSession()

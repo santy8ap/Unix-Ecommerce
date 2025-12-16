@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 
 interface SearchResult {
     id: string

@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
-import { generateOutfits } from '@/lib/ai/gemini'
+import { generateOutfits } from '@/lib/services/ai/gemini'
 import { rateLimits } from '@/lib/rateLimit'
 
 export async function POST(req: NextRequest) {

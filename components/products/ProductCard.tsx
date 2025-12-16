@@ -10,7 +10,7 @@ import { useLanguage } from '@/context/LanguageContext'
 import { toast } from 'sonner'
 import { getProductImage, parseJSON } from '@/lib/utils'
 import { ProductWithParsedImages } from '@/types'
-import RecommendationBadge from './RecommendationBadge'
+import RecommendationBadge from '../ai/RecommendationBadge'
 
 interface ProductCardProps {
   product: ProductWithParsedImages & {

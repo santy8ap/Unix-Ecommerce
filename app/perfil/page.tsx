@@ -9,8 +9,8 @@ import {
     User, Mail, Calendar, Settings, LogOut, Trash2,
     ShoppingBag, Star, Shirt, Palette, ChevronRight
 } from 'lucide-react'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 import { toast } from 'sonner'
 import Link from 'next/link'
 

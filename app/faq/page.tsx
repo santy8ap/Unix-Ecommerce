@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 import { ChevronDown, Search, HelpCircle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 

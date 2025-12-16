@@ -6,8 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import { createBitcoinCharge } from '@/lib/payments/bitcoin'
-import type { PaymentIntent } from '@/lib/payments/types'
+import { createBitcoinCharge } from '@/lib/services/payments/bitcoin'
+import type { PaymentIntent } from '@/lib/services/payments/types'
 
 export async function POST(req: NextRequest) {
     try {

@@ -100,11 +100,11 @@
       "searchPlaceholder": "Buscar productos..."
     },
     "sort": {
-      "newest": "✨ Más Nuevos",
-      "priceLow": "💰 Precio: Menor a Mayor",
-      "priceHigh": "💎 Precio: Mayor a Menor",
-      "popular": "🔥 Más Populares",
-      "rating": "⭐ Mejor Calificación"
+      "newest": "Más Nuevos",
+      "priceLow": "Precio: Menor a Mayor",
+      "priceHigh": "Precio: Mayor a Menor",
+      "popular": "Más Populares",
+      "rating": "Mejor Calificación"
     },
     "categories": {
       "all": "Todas",
@@ -315,31 +315,31 @@
   },
   "notifications": {
     "success": {
-      "productAdded": "✅ Producto agregado al carrito",
-      "productUpdated": "✅ Producto actualizado",
-      "productDeleted": "✅ Producto eliminado",
-      "orderCreated": "✅ Orden creada exitosamente",
-      "orderUpdated": "✅ Orden actualizada",
-      "saved": "✅ Guardado exitosamente",
-      "addedToWishlist": "✅ Agregado a favoritos",
+      "productAdded": "Producto agregado al carrito",
+      "productUpdated": "Producto actualizado",
+      "productDeleted": "Producto eliminado",
+      "orderCreated": "Orden creada exitosamente",
+      "orderUpdated": "Orden actualizada",
+      "saved": "Guardado exitosamente",
+      "addedToWishlist": "Agregado a favoritos",
       "removedFromWishlist": "Eliminado de favoritos",
       "cartCleared": "Carrito vaciado",
-      "copied": "✅ Copiado al portapapeles"
+      "copied": "Copiado al portapapeles"
     },
     "error": {
-      "generic": "❌ Ocurrió un error",
-      "unauthorized": "❌ No autorizado",
-      "notFound": "❌ No encontrado",
-      "invalidData": "❌ Datos inválidos",
-      "serverError": "❌ Error del servidor",
-      "networkError": "❌ Error de conexión",
+      "generic": "Ocurrió un error",
+      "unauthorized": "No autorizado",
+      "notFound": "No encontrado",
+      "invalidData": "Datos inválidos",
+      "serverError": "Error del servidor",
+      "networkError": "Error de conexión",
       "selectSizeColor": "Selecciona talla y color",
       "outOfStock": "Producto agotado",
-      "addToCartFailed": "❌ Error al agregar al carrito"
+      "addToCartFailed": "Error al agregar al carrito"
     },
     "warning": {
-      "lowStock": "⚠️ Pocas unidades disponibles",
-      "sessionExpired": "⚠️ Sesión expirada"
+      "lowStock": "Pocas unidades disponibles",
+      "sessionExpired": "Sesión expirada"
     },
     "info": {
       "processing": "Procesando...",

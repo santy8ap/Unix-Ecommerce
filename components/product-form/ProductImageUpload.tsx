@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { AlertCircle, Image as ImageIcon } from 'lucide-react'
-import ImageUpload from '../ImageUpload'
+import ImageUpload from '../shared/ImageUpload'
 
 interface ProductImageUploadProps {
     images: string[]

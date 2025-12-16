@@ -1,27 +1,27 @@
 #!/bin/bash
 
-# 🚀 Red Estampación - GitHub Setup & Deployment Guide
+# [SETUP] Red Estampacion - GitHub Setup & Deployment Guide
 # Run this script to set up your GitHub repository and deploy to Vercel
 
-echo "🎨 Red Estampación - Setup Script"
+echo "[INFO] Red Estampacion - Setup Script"
 echo "=================================="
 echo ""
 
 # Check if git is initialized
 if [ ! -d .git ]; then
-    echo "📦 Initializing git repository..."
+    echo "[INFO] Initializing git repository..."
     git init
     git branch -M main
 else
-    echo "✅ Git repository already initialized"
+    echo "[OK] Git repository already initialized"
 fi
 
 # Add all files
-echo "📝 Adding files to git..."
+echo "[INFO] Adding files to git..."
 git add .
 
 # Commit
-echo "💾 Committing changes..."
+echo "[INFO] Committing changes..."
 git commit -m "Production ready: AI-powered fashion e-commerce platform
 
 Features:
@@ -36,21 +36,21 @@ Features:
 " || echo "No changes to commit"
 
 echo ""
-echo "🌐 Next steps:"
+echo "[INFO] Next steps:"
 echo ""
-echo "1️⃣  Create a GitHub repository:"
+echo "1. Create a GitHub repository:"
 echo "   Go to https://github.com/new"
 echo "   Repository name: red-estampacion"
 echo "   Make it public or private"
 echo "   DON'T initialize with README (we already have one)"
 echo ""
-echo "2️⃣  Add GitHub remote:"
+echo "2. Add GitHub remote:"
 echo "   git remote add origin https://github.com/YOUR_USERNAME/red-estampacion.git"
 echo ""
-echo "3️⃣  Push to GitHub:"
+echo "3. Push to GitHub:"
 echo "   git push -u origin main"
 echo ""
-echo "4️⃣  Deploy to Vercel:"
+echo "4. Deploy to Vercel:"
 echo "   a) Go to https://vercel.com/new"
 echo "   b) Import your GitHub repository"
 echo "   c) Add environment variables:"
@@ -62,12 +62,12 @@ echo "      - SMTP_* (optional, for emails)"
 echo "      - GEMINI_API_KEY (optional, has fallback)"
 echo "   d) Click Deploy!"
 echo ""
-echo "5️⃣  After deployment, run database setup:"
+echo "5. After deployment, run database setup:"
 echo "   - In Vercel dashboard, go to Storage > Create Database > Postgres"
 echo "   - Copy DATABASE_URL to environment variables"
 echo "   - In your local terminal:"
 echo "     npx prisma db push --accept-data-loss"
 echo "     npx prisma db seed"
 echo ""
-echo "✨ Your app will be live at: https://your-project.vercel.app"
+echo "[DONE] Your app will be live at: https://your-project.vercel.app"
 echo ""

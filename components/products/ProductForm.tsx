@@ -7,10 +7,10 @@ import { motion } from 'framer-motion'
 import { productSchema } from '@/lib/validations/schemas'
 import * as yup from 'yup'
 import { Save, X, Loader2 } from 'lucide-react'
-import ProductImageUpload from './product-form/ProductImageUpload'
-import ProductBasicInfo from './product-form/ProductBasicInfo'
-import ProductPricing from './product-form/ProductPricing'
-import ProductAttributes from './product-form/ProductAttributes'
+import ProductImageUpload from '../product-form/ProductImageUpload'
+import ProductBasicInfo from '../product-form/ProductBasicInfo'
+import ProductPricing from '../product-form/ProductPricing'
+import ProductAttributes from '../product-form/ProductAttributes'
 
 type ProductFormProps = {
     product?: {

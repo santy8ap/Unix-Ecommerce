@@ -8,7 +8,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Bell, Check, Trash2, Package, DollarSign, Sparkles, Tag, X } from 'lucide-react'
-import { notificationService, type Notification } from '@/lib/notifications'
+import { notificationService, type Notification } from '@/lib/services/notifications'
 import Link from 'next/link'
 
 export default function NotificationsDropdown() {

@@ -7,11 +7,11 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import SmartCloset from '@/components/SmartCloset'
+import SmartCloset from '@/components/ai/SmartCloset'
 import OnboardingFlow from '@/components/OnboardingFlow'
-import AIStyleAssistant from '@/components/AIStyleAssistant'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import AIStyleAssistant from '@/components/ai/AIStyleAssistant'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 
 export default function ClosetPage() {
     const { data: session, status } = useSession()

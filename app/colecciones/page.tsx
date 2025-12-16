@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Loading from '@/components/Loading'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import Loading from '@/components/shared/Loading'
 import { Sparkles, Package, Tag, TrendingUp, ChevronRight } from 'lucide-react'
 
 interface Collection {

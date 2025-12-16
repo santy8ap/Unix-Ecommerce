@@ -7,10 +7,10 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import OutfitGenerator from '@/components/OutfitGenerator'
+import OutfitGenerator from '@/components/ai/OutfitGenerator'
 import OnboardingFlow from '@/components/OnboardingFlow'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 
 export default function OutfitsPage() {
     const { data: session, status } = useSession()

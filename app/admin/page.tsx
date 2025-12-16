@@ -11,7 +11,7 @@ import {
     Eye, EyeOff, CheckCircle, AlertCircle, ArrowUpDown, Home, ExternalLink,
     ShoppingBag, Truck, CreditCard, Calendar, User, Shield
 } from 'lucide-react'
-import Loading from '@/components/Loading'
+import Loading from '@/components/shared/Loading'
 
 type SortField = 'name' | 'price' | 'stock' | 'active'
 type SortOrder = 'asc' | 'desc'

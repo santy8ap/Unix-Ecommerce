@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 
 // --- OUTFIT GENERATOR FALLBACK --- //
 // Selecciona productos reales de la DB sin usar Gemini

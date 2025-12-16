@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
-import { sendEmail } from '@/lib/email/mailer'
+import { sendEmail } from '@/lib/services/email/mailer'
 import cron from 'node-cron'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 
 // ============================================
 // 📊 Cron Job: Reporte Diario de Órdenes

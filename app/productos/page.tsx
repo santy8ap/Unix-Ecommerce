@@ -1,8 +1,8 @@
 import { Suspense } from 'react'
 import ProductsContent from './products-content'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Loading from '@/components/Loading'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import Loading from '@/components/shared/Loading'
 import { Sparkles, TrendingUp, Zap } from 'lucide-react'
 
 export default function ProductsPage() {

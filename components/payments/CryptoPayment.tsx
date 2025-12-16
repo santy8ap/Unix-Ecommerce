@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Bitcoin, ExternalLink, Loader2 } from 'lucide-react'
-import type { PaymentIntent } from '@/lib/payments/types'
+import type { PaymentIntent } from '@/lib/services/payments/types'
 
 interface CryptoPaymentProps {
     paymentIntent: PaymentIntent

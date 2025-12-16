@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Providers from "@/components/Providers";
-import ErrorBoundary from "@/components/ErrorBoundary";
-import OfflineDetector from "@/components/OfflineDetector";
+import Providers from "@/components/providers/Providers";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
+import OfflineDetector from "@/components/shared/OfflineDetector";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({

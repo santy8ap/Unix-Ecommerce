@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import ProductCard from './ProductCard'
 import { Product } from '@/types'
 import { Eye } from 'lucide-react'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 import { parseJSON } from '@/lib/utils'
 
 const MAX_RECENT_PRODUCTS = 8

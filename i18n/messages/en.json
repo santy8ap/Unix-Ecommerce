@@ -100,11 +100,11 @@
       "searchPlaceholder": "Search products..."
     },
     "sort": {
-      "newest": "✨ Newest",
-      "priceLow": "💰 Price: Low to High",
-      "priceHigh": "💎 Price: High to Low",
-      "popular": "🔥 Most Popular",
-      "rating": "⭐ Top Rated"
+      "newest": "Newest",
+      "priceLow": "Price: Low to High",
+      "priceHigh": "Price: High to Low",
+      "popular": "Most Popular",
+      "rating": "Top Rated"
     },
     "categories": {
       "all": "All",
@@ -315,31 +315,31 @@
   },
   "notifications": {
     "success": {
-      "productAdded": "✅ Product added to cart",
-      "productUpdated": "✅ Product updated",
-      "productDeleted": "✅ Product deleted",
-      "orderCreated": "✅ Order created successfully",
-      "orderUpdated": "✅ Order updated",
-      "saved": "✅ Saved successfully",
-      "addedToWishlist": "✅ Added to wishlist",
+      "productAdded": "Product added to cart",
+      "productUpdated": "Product updated",
+      "productDeleted": "Product deleted",
+      "orderCreated": "Order created successfully",
+      "orderUpdated": "Order updated",
+      "saved": "Saved successfully",
+      "addedToWishlist": "Added to wishlist",
       "removedFromWishlist": "Removed from wishlist",
       "cartCleared": "Cart cleared",
-      "copied": "✅ Copied to clipboard"
+      "copied": "Copied to clipboard"
     },
     "error": {
-      "generic": "❌ An error occurred",
-      "unauthorized": "❌ Unauthorized",
-      "notFound": "❌ Not found",
-      "invalidData": "❌ Invalid data",
-      "serverError": "❌ Server error",
-      "networkError": "❌ Network error",
+      "generic": "An error occurred",
+      "unauthorized": "Unauthorized",
+      "notFound": "Not found",
+      "invalidData": "Invalid data",
+      "serverError": "Server error",
+      "networkError": "Network error",
       "selectSizeColor": "Select size and color",
       "outOfStock": "Product out of stock",
-      "addToCartFailed": "❌ Failed to add to cart"
+      "addToCartFailed": "Failed to add to cart"
     },
     "warning": {
-      "lowStock": "⚠️ Low stock available",
-      "sessionExpired": "⚠️ Session expired"
+      "lowStock": "Low stock available",
+      "sessionExpired": "Session expired"
     },
     "info": {
       "processing": "Processing...",

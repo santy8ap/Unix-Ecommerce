@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import { getGeminiModel } from '@/lib/ai/gemini'
+import { getGeminiModel } from '@/lib/services/ai/gemini'
 
 export async function POST(req: NextRequest) {
     try {

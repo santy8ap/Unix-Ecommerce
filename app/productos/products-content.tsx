@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import ProductCard from '@/components/ProductCard'
-import { ProductGridSkeleton } from '@/components/Skeletons'
+import ProductCard from '@/components/products/ProductCard'
+import { ProductGridSkeleton } from '@/components/shared/Skeletons'
 import { Search, ChevronDown, X, Filter, SlidersHorizontal, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 import { Product } from '@/types'
 import { parseJSON } from '@/lib/utils'
 

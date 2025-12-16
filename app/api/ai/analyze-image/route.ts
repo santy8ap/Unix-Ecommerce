@@ -13,7 +13,7 @@ import {
     analyzeClothingItem,
     analyzeOutfit,
     extractColorPalette,
-} from '@/lib/ai/vision'
+} from '@/lib/services/ai/vision'
 
 export async function POST(req: NextRequest) {
     try {

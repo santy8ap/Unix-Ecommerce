@@ -6,9 +6,9 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Info } from 'lucide-react'
-import ProductForm from '@/components/ProductForm'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import ProductForm from '@/components/products/ProductForm'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
 import { toast } from 'sonner'
 
 export default function EditProductPage() {

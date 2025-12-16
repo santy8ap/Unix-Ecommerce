@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer'
 import type { OrderConfirmationData } from './templates'
-import { logger } from '@/lib/logger'
+import { logger } from '@/lib/services/logger'
 
 // Configurar transporter de Nodemailer
 const transporter = nodemailer.createTransport({
@@ -17,10 +17,10 @@ const transporter = nodemailer.createTransport({
 export async function testEmailConnection() {
     try {
         await transporter.verify()
-        logger.success('✅ Email service connected successfully', { context: 'EMAIL' })
+        logger.success(' Email service connected successfully', { context: 'EMAIL' })
         return true
     } catch (error) {
-        logger.error('❌ Email service connection failed', error, { context: 'EMAIL' })
+        logger.error(' Email service connection failed', error, { context: 'EMAIL' })
         return false
     }
 }
@@ -44,10 +44,10 @@ export async function sendEmail(options: EmailOptions) {
             html: options.html,
         })
 
-        logger.info('✅ Email enviado a:', { context: 'EMAIL', metadata: { to: options.to } })
+        logger.info(' Email enviado a:', { context: 'EMAIL', metadata: { to: options.to } })
         return result
     } catch (error) {
-        logger.error('❌ Error enviando email', error, { context: 'EMAIL', metadata: { to: options.to } })
+        logger.error(' Error enviando email', error, { context: 'EMAIL', metadata: { to: options.to } })
         throw error
     }
 }
@@ -64,13 +64,13 @@ export async function sendOrderConfirmation(orderData: OrderConfirmationData) {
             html: templateHtml,
         })
 
-        logger.success('✅ Orden confirmada enviada', {
+        logger.success(' Orden confirmada enviada', {
             context: 'EMAIL',
             metadata: { email: orderData.userEmail, orderId: orderData.orderId }
         })
         return result
     } catch (error) {
-        logger.error('❌ Error enviando confirmación de orden', error, {
+        logger.error(' Error enviando confirmación de orden', error, {
             context: 'EMAIL',
             metadata: { orderId: orderData.orderId }
         })

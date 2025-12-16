@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { sendNewsletterConfirmation } from '@/lib/email/mailer'
+import { sendNewsletterConfirmation } from '@/lib/services/email/mailer'
 
 export async function POST(request: NextRequest) {
     try {

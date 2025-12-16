@@ -38,14 +38,14 @@ export function validateEnv() {
     // Check required variables
     requiredEnvVars.forEach((envVar) => {
         if (!process.env[envVar]) {
-            errors.push(`❌ Missing required environment variable: ${envVar}`)
+            errors.push(` Missing required environment variable: ${envVar}`)
         }
     })
 
     // Check optional but recommended variables
     Object.entries(optionalEnvVars).forEach(([envVar, description]) => {
         if (!process.env[envVar]) {
-            warnings.push(`⚠️  Optional variable missing: ${envVar} (needed for ${description})`)
+            warnings.push(`Optional variable missing: ${envVar} (needed for ${description})`)
         }
     })
 
@@ -53,12 +53,12 @@ export function validateEnv() {
     const hasPayment = !!process.env.NEXT_PUBLIC_COINBASE_COMMERCE_API_KEY
 
     if (!hasPayment) {
-        warnings.push('⚠️  Bitcoin payment gateway not configured.')
+        warnings.push('  Bitcoin payment gateway not configured.')
     }
 
     // Log results
     if (errors.length > 0) {
-        console.error('\n🚨 Environment Validation Failed:\n')
+        console.error('\n Environment Validation Failed:\n')
         errors.forEach(error => console.error(error))
         console.error('\nApplication may not function correctly without these variables.\n')
 
@@ -68,13 +68,13 @@ export function validateEnv() {
     }
 
     if (warnings.length > 0 && process.env.NODE_ENV !== 'test') {
-        console.warn('\n⚠️  Environment Warnings:\n')
+        console.warn('\n  Environment Warnings:\n')
         warnings.forEach(warning => console.warn(warning))
         console.warn('\nSome features may not be available.\n')
     }
 
     if (errors.length === 0 && warnings.length === 0) {
-        console.log('✅ Environment validation passed')
+        console.log(' Environment validation passed')
     }
 
     return {

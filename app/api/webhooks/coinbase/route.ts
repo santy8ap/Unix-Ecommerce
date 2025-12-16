@@ -4,9 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyCoinbaseWebhook } from '@/lib/payments/bitcoin'
+import { verifyCoinbaseWebhook } from '@/lib/services/payments/bitcoin'
 import { prisma } from '@/lib/prisma'
-import { sendOrderConfirmation } from '@/lib/email/mailer'
+import { sendOrderConfirmation } from '@/lib/services/email/mailer'
 
 export async function POST(req: NextRequest) {
     try {

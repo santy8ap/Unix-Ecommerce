@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
-import { sendCustomEmail } from '@/lib/email/mailer'
+import { sendCustomEmail } from '@/lib/services/email/mailer'
 
 export async function PUT(
     request: NextRequest,

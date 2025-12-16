@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import AIStylingChat from '@/components/AIStylingChat'
+import Navbar from '@/components/layout/Navbar'
+import Footer from '@/components/layout/Footer'
+import AIStylingChat from '@/components/ai/AIStylingChat'
 import {
     Sparkles, Zap, Palette, Shirt, Heart,
     TrendingUp, ArrowRight, Bot, User

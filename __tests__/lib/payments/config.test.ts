@@ -8,7 +8,7 @@ import {
     getEnabledPaymentMethods,
     PAYMENT_LABELS,
     PAYMENT_ICONS
-} from '@/lib/payments/config'
+} from '@/lib/services/payments/config'
 
 describe('Payment Configuration', () => {
     describe('PAYMENT_METHODS', () => {
